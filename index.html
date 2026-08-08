@@ -1302,12 +1302,15 @@
       // ===== POLAROID =====
       var polaroidOverlay = document.getElementById("polaroid-overlay");
       var polaroidSlideImg = document.getElementById("polaroid-slide-img");
-      var currentSlideIndex = 0;
 
       function openPolaroid(index) {
         if (!PHOTOS.length) return;
-        currentSlideIndex = index % PHOTOS.length;
-        updatePolaroidSlide();
+        var src = PHOTOS[index % PHOTOS.length];
+        polaroidSlideImg.src = src;
+        polaroidSlideImg.onerror = function() {
+          this.onerror = null;
+          this.src = 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22300%22 height=%22300%22 viewBox=%220 0 300 300%22%3E%3Crect width=%22300%22 height=%22300%22 fill=%22%23ede5dc%22/%3E%3Ctext x=%22150%22 y=%22150%22 text-anchor=%22middle%22 dy=%22.3em%22 font-family=%22serif%22 font-size=%2240%22 fill=%22%23999%22%3E🖼️%3C/text%3E%3C/svg%3E';
+        };
         polaroidOverlay.classList.add("shown");
         document.body.style.overflow = "hidden";
       }
@@ -1315,15 +1318,6 @@
       function closePolaroid() {
         polaroidOverlay.classList.remove("shown");
         document.body.style.overflow = "";
-      }
-
-      function updatePolaroidSlide() {
-        var src = PHOTOS[currentSlideIndex];
-        polaroidSlideImg.src = src;
-        polaroidSlideImg.onerror = function() {
-          this.onerror = null;
-          this.src = 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22300%22 height=%22300%22 viewBox=%220 0 300 300%22%3E%3Crect width=%22300%22 height=%22300%22 fill=%22%23ede5dc%22/%3E%3Ctext x=%22150%22 y=%22150%22 text-anchor=%22middle%22 dy=%22.3em%22 font-family=%22serif%22 font-size=%2240%22 fill=%22%23999%22%3E🖼️%3C/text%3E%3C/svg%3E';
-        };
       }
 
       // بستن با کلیک روی پس‌زمینه
@@ -1746,7 +1740,7 @@
           img.loading = "lazy";
           fallbackImage(img, '🖼️');
 
-          // کلیک روی عکس در گرید، پولاروید را باز می‌کند
+          // کلیک روی عکس در گرید، پولاروید را با همان عکس باز می‌کند
           card.addEventListener("click", function() {
             openPolaroid(n);
           });
