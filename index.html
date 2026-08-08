@@ -426,6 +426,7 @@
       height: 100%;
       object-fit: cover;
       display: block;
+      pointer-events: none;
     }
     .photo-card.size-lg {
       grid-column: span 2;
@@ -1302,6 +1303,7 @@
 
       function openPolaroid(index) {
         if (!PHOTOS.length) return;
+        // مهم: مستقیماً از آرایه PHOTOS با ایندکس استفاده می‌کنیم
         var src = PHOTOS[index % PHOTOS.length];
         polaroidSlideImg.src = src;
         polaroidSlideImg.onerror = function() {
@@ -1737,9 +1739,10 @@
           img.loading = "lazy";
           fallbackImage(img, '🖼️');
 
-          card.addEventListener("click", function() {
+          // استفاده از onclick به جای addEventListener برای اطمینان در PC
+          card.onclick = function() {
             openPolaroid(n);
-          });
+          };
 
           card.appendChild(img);
           grid.appendChild(card);
