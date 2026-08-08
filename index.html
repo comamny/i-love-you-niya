@@ -4,9 +4,8 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap" />
-  <title>For You | webkaizen</title>
+  <title>For You | Memory Box</title>
   <meta name="description" content="A romantic virtual gift of flowers for long-distance love." />
-  <link rel="icon" href="favicon.ico" type="image/x-icon" />
   <style>
     *,
     *::before,
@@ -1738,7 +1737,6 @@
           img.loading = "lazy";
           fallbackImage(img, '🖼️');
 
-          // کلیک روی عکس در گرید، پولاروید را با همان عکس باز می‌کند
           card.addEventListener("click", function() {
             openPolaroid(n);
           });
@@ -1790,51 +1788,6 @@
 
       document.addEventListener("contextmenu", function(e) {
         e.preventDefault();
-      });
-
-      function redirectToSafety() {
-        window.location.replace("https://webkaizen.in/products");
-      }
-
-      document.addEventListener("keydown", function(e) {
-        if (
-          e.key === "F12" ||
-          (e.ctrlKey && e.shiftKey && ["I", "J", "C"].includes(e.key.toUpperCase())) ||
-          (e.ctrlKey && e.key.toUpperCase() === "U")
-        ) {
-          e.preventDefault();
-          redirectToSafety();
-        }
-      });
-
-      setInterval(function() {
-        var startTime = performance.now();
-        (function() { return false; }.constructor('debugger').call());
-        var endTime = performance.now();
-        if (endTime - startTime > 10) {
-          redirectToSafety();
-        }
-      }, 100);
-
-      document.addEventListener('DOMContentLoaded', function() {
-        var observer = new MutationObserver(function(mutations) {
-          mutations.forEach(function(mutation) {
-            mutation.addedNodes.forEach(function(node) {
-              if (node.nodeName === 'IMG') {
-                var src = node.getAttribute('src');
-                if (src && !src.startsWith('data:')) {
-                  if (src.includes('flower')) fallbackImage(node, '🌸');
-                  else if (src.includes('rose')) fallbackImage(node, '🌹');
-                  else if (src.includes('locked')) fallbackImage(node, '🔒');
-                  else if (src.includes('giftbox')) fallbackImage(node, '🎁');
-                  else if (src.includes('centre')) fallbackImage(node, '❤️');
-                  else fallbackImage(node, '🖼️');
-                }
-              }
-            });
-          });
-        });
-        observer.observe(document.body, { childList: true, subtree: true });
       });
 
     })();
