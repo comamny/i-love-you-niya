@@ -1,0 +1,1264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Для тебя · Unlock</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    html, body {
+      width: 100%;
+      min-height: 100vh;
+      background: #faf6f0;
+      font-family: Georgia, 'Times New Roman', serif;
+      overflow-x: hidden;
+    }
+    /* lock screen – first page */
+    .lock-screen {
+      position: fixed;
+      inset: 0;
+      z-index: 1000;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: #f8eee8;
+      background-image: url("assets/bg.png");
+      background-size: cover;
+      background-position: center;
+      transition: opacity 0.7s ease, visibility 0.7s ease;
+    }
+    .lock-screen.hidden {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+    .lock-area {
+      width: clamp(140px, 18vw, 220px);
+      height: clamp(140px, 18vw, 220px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 6px;
+      transition: transform 0.7s cubic-bezier(0.1, 0.88, 0.18, 1);
+    }
+    .lock-area.slide-down {
+      transform: translateY(220px);
+    }
+    /* shake animation for wrong password */
+    .lock-area.shake {
+      animation: shake 0.45s ease;
+    }
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      20% { transform: translateX(-8px); }
+      40% { transform: translateX(8px); }
+      60% { transform: translateX(-6px); }
+      80% { transform: translateX(6px); }
+    }
+    .lock-image {
+      width: 100%;
+      height: auto;
+      display: block;
+      filter: drop-shadow(0 8px 16px rgba(100,45,55,0.15));
+      animation: float 4s ease-in-out infinite;
+      user-select: none;
+      pointer-events: none;
+      transition: opacity 0.1s ease;
+    }
+    .lock-image.hide {
+      opacity: 0;
+      animation: none;
+    }
+    @keyframes float {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      50% { transform: translateY(-6px) rotate(-1deg); }
+    }
+    .message {
+      text-align: center;
+      margin-bottom: 6px;
+      transition: opacity 0.35s ease, transform 0.35s ease;
+    }
+    .message.fade-up {
+      opacity: 0;
+      transform: translateY(22px);
+    }
+    .title {
+      font-family: 'Brush Script MT', cursive;
+      font-size: clamp(24px, 2.8vw, 36px);
+      font-weight: 500;
+      color: #54343b;
+    }
+    .subtitle {
+      font-family: 'Brush Script MT', cursive;
+      font-size: clamp(18px, 2vw, 28px);
+      color: #54343b;
+      font-style: italic;
+    }
+    .secret {
+      font-size: clamp(11px, 0.9vw, 15px);
+      color: #87616a;
+      font-style: italic;
+      margin-top: 2px;
+    }
+    .passcode {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin: 10px 0 12px;
+      transition: opacity 0.35s ease, transform 0.35s ease;
+    }
+    .passcode.fade-up {
+      opacity: 0;
+      transform: translateY(18px);
+    }
+    .pass-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      border: 1.5px solid rgba(100,50,60,0.4);
+      background: rgba(255,255,255,0.2);
+      transition: 0.2s ease;
+    }
+    .pass-dot.filled {
+      background: #70414a;
+      border-color: #70414a;
+      transform: scale(1.15);
+      box-shadow: 0 2px 6px rgba(90,35,45,0.15);
+    }
+    /* wrong password dots turn red */
+    .pass-dot.error {
+      background: #b65c67;
+      border-color: #b65c67;
+    }
+    .keypad {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      width: min(85vw, 320px);
+      margin-top: 4px;
+      transition: opacity 0.38s ease, transform 0.38s ease;
+    }
+    .keypad.fade-up {
+      opacity: 0;
+      transform: translateY(28px);
+      pointer-events: none;
+    }
+    .key {
+      height: clamp(38px, 5.5vh, 52px);
+      border-radius: 8px;
+      border: 1px solid rgba(117,65,74,0.2);
+      background: linear-gradient(180deg, rgba(255,255,255,0.7), rgba(246,224,220,0.8));
+      color: #573b40;
+      font-size: clamp(14px, 1.2vw, 20px);
+      font-family: inherit;
+      cursor: pointer;
+      box-shadow: 0 2px 6px rgba(90,40,50,0.06), inset 0 1px 0 rgba(255,255,255,0.6);
+      transition: transform 0.08s ease;
+      outline: none;
+    }
+    .key:active {
+      transform: scale(0.92) translateY(1px);
+    }
+    .key.delete {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .backspace-icon {
+      width: 20px;
+      height: 16px;
+    }
+    .error-text {
+      font-size: clamp(11px, 0.8vw, 14px);
+      color: #91444e;
+      font-style: italic;
+      margin-top: 10px;
+      opacity: 0;
+      transition: opacity 0.2s ease;
+      min-height: 1.4em;
+    }
+    .error-text.show {
+      opacity: 1;
+    }
+
+    /* explosion effect */
+    .explosion {
+      position: fixed;
+      left: 0;
+      top: 0;
+      width: 1px;
+      height: 1px;
+      z-index: 9999;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.1s ease;
+    }
+    .explosion.active {
+      opacity: 1;
+    }
+    .blast-flash {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      transform: translate(-50%,-50%) scale(0.05);
+      opacity: 0;
+      background: radial-gradient(circle, rgba(255,255,255,0.95) 0%, rgba(255,229,232,0.86) 14%, rgba(249,190,198,0.55) 30%, rgba(238,148,161,0.25) 48%, rgba(232,130,145,0) 75%);
+      filter: blur(1px);
+    }
+    .explosion.active .blast-flash {
+      animation: softFlash 0.70s cubic-bezier(0.08,0.72,0.16,1) forwards;
+    }
+    @keyframes softFlash {
+      0% { opacity: 0; transform: translate(-50%,-50%) scale(0.05); }
+      10% { opacity: 0.65; }
+      25% { opacity: 0.55; transform: translate(-50%,-50%) scale(6); }
+      55% { opacity: 0.22; transform: translate(-50%,-50%) scale(11); }
+      100% { opacity: 0; transform: translate(-50%,-50%) scale(17); }
+    }
+    .shockwave {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      border: 2px solid rgba(225,130,143,0.27);
+      box-shadow: 0 0 20px rgba(232,141,153,0.13);
+      transform: translate(-50%,-50%) scale(0.05);
+      opacity: 0;
+    }
+    .explosion.active .shockwave {
+      animation: softShock 1.02s cubic-bezier(0.08,0.7,0.12,1) forwards;
+    }
+    @keyframes softShock {
+      0% { opacity: 0; transform: translate(-50%,-50%) scale(0.05); }
+      10% { opacity: 0.42; }
+      28% { opacity: 0.30; transform: translate(-50%,-50%) scale(7); }
+      62% { opacity: 0.12; transform: translate(-50%,-50%) scale(18); }
+      100% { opacity: 0; transform: translate(-50%,-50%) scale(30); }
+    }
+    .shockwave.second {
+      width: 24px;
+      height: 24px;
+      border: 1.5px solid rgba(239,160,170,0.20);
+    }
+    .explosion.active .shockwave.second {
+      animation: softShockSecond 1.30s 0.07s cubic-bezier(0.08,0.7,0.12,1) forwards;
+    }
+    @keyframes softShockSecond {
+      0% { opacity: 0; transform: translate(-50%,-50%) scale(0.05); }
+      12% { opacity: 0.30; }
+      100% { opacity: 0; transform: translate(-50%,-50%) scale(40); }
+    }
+    .explosion::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      transform: translate(-50%,-50%) scale(0.1);
+      opacity: 0;
+      background: radial-gradient(circle, rgba(255,235,237,0.65), rgba(244,170,180,0.18) 45%, transparent 72%);
+      filter: blur(3px);
+    }
+    .explosion.active::after {
+      animation: finalGlow 1.15s ease-out forwards;
+    }
+    @keyframes finalGlow {
+      0% { opacity: 0; transform: translate(-50%,-50%) scale(0.1); }
+      18% { opacity: 0.38; }
+      55% { opacity: 0.16; transform: translate(-50%,-50%) scale(10); }
+      100% { opacity: 0; transform: translate(-50%,-50%) scale(17); }
+    }
+
+    /* bloom field – after explosion */
+    .bloom-field {
+      position: fixed;
+      inset: 0;
+      z-index: 500;
+      pointer-events: none;
+      overflow: hidden;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.9s ease, visibility 0s linear 0.9s;
+      background-color: #faf6f0;
+    }
+
+    /* bg1.png is on a separate layer so it can fade
+       while the flowers move away. */
+    .bloom-field::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+      background-image: url("bg1.png");
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      opacity: 1;
+      filter: blur(0);
+      transform: scale(1);
+      transition:
+        opacity 1.4s ease,
+        filter 1.4s ease,
+        transform 1.4s ease;
+      will-change: opacity, filter, transform;
+    }
+
+    .bloom-field.active {
+      opacity: 1;
+      visibility: visible;
+      transition: opacity 0.9s ease, visibility 0s;
+    }
+
+    /* This starts exactly when the flowers start moving aside. */
+    .bloom-field.bg-fading::before {
+      opacity: 0;
+      filter: blur(7px);
+      transform: scale(1.025);
+    }
+
+    .bloom-flower {
+      position: absolute;
+      z-index: 1;
+      top: 0;
+      left: 0;
+      will-change: transform, opacity;
+      opacity: 0;
+      pointer-events: none;
+      border-radius: 50%;
+      box-shadow: 0 4px 20px rgba(180, 100, 80, 0.06);
+    }
+    .bloom-flower.in {
+      animation: flowerFall var(--rdur) ease-in var(--ldelay) forwards,
+                 flowerFloat var(--dur) ease-in-out var(--fdelay) infinite;
+    }
+    @keyframes flowerFall {
+      0% { opacity: 0; transform: translate(var(--fx), var(--startY)) rotate(var(--rot-start)) scale(0.3); }
+      20% { opacity: 1; transform: translate(var(--fx), calc(var(--startY) + var(--fall) * 0.2)) rotate(var(--rot-start)) scale(0.7); }
+      100% { opacity: 1; transform: translate(var(--fx), calc(var(--startY) + var(--fall))) rotate(var(--rot-end)) scale(1); }
+    }
+    @keyframes flowerFloat {
+      0% { transform: translate(var(--fx), calc(var(--startY) + var(--fall))) rotate(var(--rot-end)) scale(1); }
+      25% { transform: translate(calc(var(--fx) + var(--sway1)), calc(var(--startY) + var(--fall) - 8px)) rotate(calc(var(--rot-end) + 2deg)) scale(1.02); }
+      50% { transform: translate(calc(var(--fx) + var(--sway2)), calc(var(--startY) + var(--fall) + 6px)) rotate(calc(var(--rot-end) - 2deg)) scale(0.98); }
+      75% { transform: translate(calc(var(--fx) + var(--sway1) * 0.6), calc(var(--startY) + var(--fall) - 4px)) rotate(calc(var(--rot-end) + 1deg)) scale(1.01); }
+      100% { transform: translate(var(--fx), calc(var(--startY) + var(--fall))) rotate(var(--rot-end)) scale(1); }
+    }
+    .bloom-flower.curtain-open {
+      animation: curtainSweep 1.4s cubic-bezier(0.5, 0.0, 0.3, 1.0) var(--cdelay) forwards;
+    }
+    @keyframes curtainSweep {
+      0% { opacity: 1; transform: translate(var(--fx), calc(var(--startY) + var(--fall))) rotate(var(--rot-end)) scale(1); }
+      100% { opacity: 0; transform: translate(calc(var(--fx) + var(--cx)), calc(var(--startY) + var(--fall) + var(--cy))) rotate(calc(var(--rot-end) + 30deg)) scale(0.2); }
+    }
+
+    /* second content (page 2 from original) */
+    .second-page {
+      position: relative;
+      z-index: 10;
+      min-height: 100vh;
+      background: #faf6f0;
+      padding: 20px 20px 60px;
+      display: none;
+    }
+    .second-page.shown {
+      display: block;
+    }
+    .second-content {
+      position: relative;
+      max-width: 720px;
+      margin: 0 auto;
+    }
+    .rose-deco {
+      position: absolute;
+      top: -28px;
+      left: -32px;
+      right: auto;
+      z-index: 5;
+      display: block;
+      margin: 0;
+      opacity: 0;
+      transform: translateY(-18px) rotate(3deg) scale(0.88);
+      transform-origin: top right;
+      transition: opacity 1s ease, transform 1s cubic-bezier(0.2, 0.8, 0.2, 1);
+      pointer-events: none;
+    }
+    .rose-deco.spring {
+      opacity: 1;
+      transform: translateY(0) rotate(3deg) scale(1);
+    }
+    .rose-deco img {
+      display: block;
+      margin: 0;
+      width: 120px;
+      height: auto;
+      filter: drop-shadow(0 8px 20px rgba(180,70,50,0.15));
+    }
+    .hero {
+      text-align: center;
+      padding: 72px 0 10px;
+    }
+    .hero h1 {
+      font-size: 2.8rem;
+      font-weight: 500;
+      letter-spacing: 0.03em;
+      color: #2c1810;
+    }
+    .hero .sub {
+      font-size: 1.2rem;
+      font-style: italic;
+      opacity: 0.6;
+      margin-top: 2px;
+    }
+    .hero .centre-wrap {
+      margin: 16px auto 0;
+      max-width: 280px;
+      border-radius: 50%;
+      overflow: hidden;
+      box-shadow: 0 12px 40px rgba(100,50,40,0.12);
+      aspect-ratio: 1/1;
+      background: #f0e8e0;
+    }
+    .hero .centre-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .flourish {
+      margin-top: 18px;
+      font-size: 1.6rem;
+      letter-spacing: 14px;
+      opacity: 0.4;
+    }
+    .flourish .heart { color: #b34a3a; }
+    .smile-section { padding: 30px 0 20px; }
+    .smile-card {
+      position: relative;
+      background: rgba(255,248,242,0.8);
+      backdrop-filter: blur(4px);
+      padding: 36px 28px;
+      border-radius: 40px 12px 40px 12px;
+      box-shadow: 0 4px 30px rgba(120,70,50,0.06);
+      text-align: center;
+      font-size: 1.5rem;
+      line-height: 1.6;
+      opacity: 0;
+      transform: translateY(28px);
+      transition: opacity 0.9s ease, transform 0.9s ease;
+      border: 1px solid rgba(200,160,140,0.15);
+    }
+    .smile-card.in {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .smile-card .deco {
+      position: absolute;
+      font-size: 1.4rem;
+      opacity: 0.15;
+      color: #b34a3a;
+    }
+    .smile-card .d1 { top: 12px; left: 18px; }
+    .smile-card .d2 { top: 12px; right: 18px; }
+    .smile-card .d3 { bottom: 12px; left: 18px; }
+    .smile-card .d4 { bottom: 12px; right: 18px; }
+    .hl-smile { color: #b34a3a; font-weight: 600; }
+    .hl-peace { color: #5a7a6a; font-weight: 600; }
+    .hl-love { color: #c45a4a; font-weight: 600; }
+    .hl-home { color: #8a6a5a; font-weight: 600; }
+
+    .photo-grid-section {
+      padding: 20px 0 10px;
+      width: min(94vw, 980px);
+      margin-left: 50%;
+      transform: translateX(-50%);
+    }
+    .photo-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      grid-auto-rows: minmax(0, 1fr);
+      grid-auto-flow: dense;
+      gap: 16px;
+      width: 100%;
+      align-items: stretch;
+    }
+    .photo-card {
+      position: relative;
+      min-width: 0;
+      border-radius: 16px;
+      overflow: hidden;
+      background: #ede5dc;
+      box-shadow: 0 4px 16px rgba(60,30,20,0.08);
+      transform: translateY(30px) rotate(var(--rot, 0deg));
+      opacity: 0;
+      transition: opacity 0.7s ease, transform 0.7s ease, box-shadow 0.25s ease;
+      aspect-ratio: 1 / 1;
+      border: 2px solid rgba(255,248,242,0.55);
+      cursor: pointer;
+    }
+    .photo-card:hover {
+      box-shadow: 0 8px 24px rgba(60,30,20,0.12);
+      z-index: 2;
+    }
+    .photo-card.in {
+      opacity: 1;
+      transform: translateY(0) rotate(var(--rot, 0deg));
+    }
+    .photo-card img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      pointer-events: none;
+    }
+    .photo-card.size-lg { grid-column: span 2; grid-row: span 2; aspect-ratio: 1 / 1; }
+    .photo-card.size-md { grid-column: span 2; grid-row: span 1; aspect-ratio: 2 / 1; }
+    .photo-card.size-sm { grid-column: span 1; grid-row: span 1; aspect-ratio: 1 / 1; }
+        .photo-card.photo-four {
+      grid-column: span 2;
+      grid-row: span 2;
+      aspect-ratio: 1 / 1;
+    }
+    .photo-card.photo-nine {
+      grid-column: span 2;
+      grid-row: span 2;
+      aspect-ratio: 1 / 1;
+    }
+    .photo-grid-section .section-label {
+      text-align: center;
+      font-size: 1rem;
+      letter-spacing: 0.15em;
+      opacity: 0.35;
+      margin-bottom: 18px;
+      font-weight: 400;
+      text-transform: uppercase;
+      color: #5a3d35;
+    }
+    .photo-grid-section .section-label .deco-line {
+      display: inline-block;
+      width: 28px;
+      height: 1px;
+      background: #b34a3a;
+      vertical-align: middle;
+      margin: 0 10px;
+      opacity: 0.3;
+    }
+    .photo-grid-section .section-label .heart-icon { color: #b34a3a; opacity: 0.5; margin: 0 4px; }
+
+    .letter-section { padding: 20px 0 10px; }
+    .letter-card {
+      background: rgba(255,248,242,0.7);
+      backdrop-filter: blur(4px);
+      padding: 36px 28px;
+      border-radius: 24px;
+      border: 1px solid rgba(200,160,140,0.1);
+      box-shadow: 0 4px 24px rgba(100,60,40,0.04);
+      font-size: 1.15rem;
+      line-height: 1.9;
+      color: #2c1810;
+    }
+    .letter-card .word {
+      display: inline-block;
+      opacity: 0;
+      transform: translateY(6px) scale(0.97);
+      transition: opacity 0.5s ease, transform 0.5s ease;
+    }
+    .letter-card .word.in {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+    .heart-divider {
+      text-align: center;
+      font-size: 2rem;
+      color: #b34a3a;
+      opacity: 0.2;
+      padding: 30px 0 10px;
+      letter-spacing: 8px;
+    }
+    .footer-section {
+      text-align: center;
+      padding: 20px 0 40px;
+    }
+    .footer-section h2 {
+      font-size: 2rem;
+      font-weight: 500;
+      letter-spacing: 0.04em;
+      opacity: 0;
+      transform: translateY(12px);
+      transition: opacity 0.8s ease, transform 0.8s ease;
+      color: #b34a3a;
+    }
+    .footer-section h2.in { opacity: 1; transform: translateY(0); }
+    .footer-section p {
+      font-size: 1.2rem;
+      font-style: italic;
+      opacity: 0;
+      transform: translateY(8px);
+      transition: opacity 0.8s ease 0.2s, transform 0.8s ease 0.2s;
+      margin-top: 4px;
+    }
+    .footer-section p.in { opacity: 0.5; transform: translateY(0); }
+
+    /* responsive */
+    @media (max-width: 640px) {
+      .hero { padding-top: 62px; }
+      .hero h1 { font-size: 2rem; }
+      .smile-card { font-size: 1.2rem; padding: 28px 18px; }
+      .photo-grid { gap: 6px; }
+      .photo-card { border-radius: 11px; border-width: 1px; }
+      .rose-deco { left: -22px; right: auto; top: -20px; }
+      .rose-deco img { width: 82px; }
+      .letter-card { font-size: 1rem; padding: 26px 18px; }
+    }
+    @media (max-width: 400px) {
+      .photo-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+      .photo-card.size-lg { grid-column: span 2; grid-row: span 1; }
+      .photo-card.size-md { grid-column: span 2; }
+      .photo-card.size-sm { grid-column: span 1; }
+      .photo-card.photo-four { grid-column: span 2; grid-row: span 2; aspect-ratio: 1 / 1; }
+      .photo-card.photo-nine { grid-column: span 2; grid-row: span 2; aspect-ratio: 1 / 1; }
+    }
+
+    /* ===== POLAROID VIEWER ===== */
+    .polaroid-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 4000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(0, 0, 0, 0.5);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.5s ease, visibility 0.5s ease;
+      padding: 20px;
+      cursor: pointer;
+    }
+
+    .polaroid-overlay.shown {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .polaroid-container {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      pointer-events: none;
+    }
+
+    .polaroid-box {
+      background: rgba(253, 245, 230, 0.94);
+      padding: 16px 16px 55px 16px;
+      border-radius: 4px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      position: relative;
+      pointer-events: none;
+      transform: scale(0.92) rotate(-1deg);
+      transition: transform 0.35s ease;
+    }
+
+    .polaroid-overlay.shown .polaroid-box {
+      transform: scale(1) rotate(-1deg);
+    }
+
+    .polaroid-inner {
+      width: 280px;
+      height: 280px;
+      background: #222;
+      overflow: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border-radius: 2px;
+      pointer-events: none;
+    }
+
+    .polaroid-inner img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      pointer-events: none;
+    }
+
+    @media (max-width: 480px) {
+      .polaroid-inner {
+        width: 220px;
+        height: 220px;
+      }
+      .polaroid-box {
+        padding: 12px 12px 45px 12px;
+      }
+    }
+
+    @media (max-width: 380px) {
+      .polaroid-inner {
+        width: 170px;
+        height: 170px;
+      }
+      .polaroid-box {
+        padding: 10px 10px 38px 10px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ===== LOCK SCREEN ===== -->
+<div class="lock-screen" id="lockScreen">
+  <div class="lock-area" id="lockArea">
+    <img class="lock-image" id="lockImage" src="assets/key.png" alt="lock" />
+  </div>
+  <div class="message" id="messageGroup">
+    <div class="title">От кого-то</div>
+    <div class="subtitle">Для тебя</div>
+    <div class="secret">маленький секрет...</div>
+  </div>
+  <div class="passcode" id="passcodeGroup">
+    <span class="pass-dot"></span>
+    <span class="pass-dot"></span>
+    <span class="pass-dot"></span>
+    <span class="pass-dot"></span>
+  </div>
+  <div class="keypad" id="keypadGroup">
+    <button class="key" data-key="1">1</button>
+    <button class="key" data-key="2">2</button>
+    <button class="key" data-key="3">3</button>
+    <button class="key" data-key="4">4</button>
+    <button class="key" data-key="5">5</button>
+    <button class="key" data-key="6">6</button>
+    <button class="key" data-key="7">7</button>
+    <button class="key" data-key="8">8</button>
+    <button class="key" data-key="9">9</button>
+    <div></div>
+    <button class="key" data-key="0">0</button>
+    <button class="key delete" data-key="delete" aria-label="Delete">
+      <svg class="backspace-icon" viewBox="0 0 24 18" aria-hidden="true">
+        <path d="M8 2.5H20C21.1 2.5 22 3.4 22 4.5V13.5C22 14.6 21.1 15.5 20 15.5H8L2.5 9L8 2.5Z" fill="none" stroke="#63434a" stroke-width="1.55" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M12 6L17 12" fill="none" stroke="#63434a" stroke-width="1.4" stroke-linecap="round"/>
+        <path d="M17 6L12 12" fill="none" stroke="#63434a" stroke-width="1.4" stroke-linecap="round"/>
+      </svg>
+    </button>
+  </div>
+  <div class="error-text" id="errorText"></div>
+</div>
+
+<!-- ===== EXPLOSION ===== -->
+<div class="explosion" id="explosion">
+  <div class="blast-flash"></div>
+  <div class="shockwave"></div>
+  <div class="shockwave second"></div>
+</div>
+
+<!-- ===== BLOOM FIELD ===== -->
+<div class="bloom-field" id="bloomField" aria-hidden="true"></div>
+
+<!-- ===== SECOND PAGE CONTENT ===== -->
+<div class="second-page" id="secondPage">
+  <div class="second-content">
+    <div class="rose-deco" id="roseDeco">
+      <img src="assets/photos/rose.png" alt="" draggable="false" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22200%22 height=%22200%22 viewBox=%220 0 200 200%22%3E%3Crect width=%22200%22 height=%22200%22 fill=%22%23f0e8e0%22/%3E%3Ctext x=%22100%22 y=%22100%22 text-anchor=%22middle%22 dy=%22.3em%22 font-family=%22serif%22 font-size=%2240%22 fill=%22%23999%22%3E🌹%3C/text%3E%3C/svg%3E'" />
+    </div>
+    <section class="hero">
+      <h1>От меня — тебе.</h1>
+      <p class="sub">Вот как сильно я тебя люблю.</p>
+      <div class="centre-wrap">
+        <img src="assets/photos/centre.jpg" alt="Us" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22400%22 viewBox=%220 0 400 400%22%3E%3Crect width=%22400%22 height=%22400%22 fill=%22%23f0e8e0%22/%3E%3Ctext x=%22200%22 y=%22200%22 text-anchor=%22middle%22 dy=%22.3em%22 font-family=%22serif%22 font-size=%2250%22 fill=%22%23999%22%3E❤️%3C/text%3E%3C/svg%3E'" />
+      </div>
+      <div class="flourish" aria-hidden="true"><span class="sm">&#10022;</span><span class="heart">&#9825;</span><span class="sm">&#10022;</span></div>
+    </section>
+    <section class="smile-section">
+      <div class="smile-card" id="smileCard">
+        <span class="deco d1" aria-hidden="true">&#9829;</span>
+        <span class="deco d2" aria-hidden="true">&#10048;</span>
+        <span class="deco d3" aria-hidden="true">&#9829;</span>
+        <span class="deco d4" aria-hidden="true">&#10023;</span>
+        <p>In your <span class="hl-smile">smile</span>, I found my <span class="hl-peace">peace</span>.<br />In your <span class="hl-love">love</span>, I found my <span class="hl-home">home</span>.</p>
+      </div>
+    </section>
+
+    <!-- photo grid -->
+    <section class="photo-grid-section" id="photoGridSection">
+      <div class="section-label">
+        <span class="deco-line"></span>
+        <span class="heart-icon">♥</span> our moments <span class="heart-icon">♥</span>
+        <span class="deco-line"></span>
+      </div>
+      <div class="photo-grid" id="photoGrid"></div>
+    </section>
+
+    <section class="letter-section" id="letterSection">
+      <div class="letter-card">
+        <p id="letterWords"></p>
+      </div>
+    </section>
+
+    <div class="heart-divider" aria-hidden="true"><span>&#9825;</span></div>
+
+    <section class="footer-section" id="footerSection">
+      <h2>Я всегда буду любить тебя</h2>
+      <p>Навсегда твой</p>
+    </section>
+  </div>
+</div>
+
+
+<!-- ===== POLAROID OVERLAY ===== -->
+<div id="polaroid-overlay" class="polaroid-overlay" aria-hidden="true">
+  <div class="polaroid-container">
+    <div class="polaroid-box">
+      <div class="polaroid-inner">
+        <img id="polaroid-slide-img" src="" alt="Memory" draggable="false" />
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  (function() {
+    "use strict";
+
+    const PASSCODE = "2009";
+    const FLOWER_CYCLE = [
+      "assets/flowers/flower-1.png",
+      "assets/flowers/flower-2.png",
+      "assets/flowers/flower-3.png",
+      "assets/flowers/flower-1.png",
+      "assets/flowers/flower-2.png",
+      "assets/flowers/flower-3.png"
+    ];
+    const PHOTOS = [
+      "assets/photos/image1.jpg",
+      "assets/photos/image2.jpg",
+      "assets/photos/image3.jpg",
+      "assets/photos/image4.jpg",
+      "assets/photos/image5.jpg",
+      "assets/photos/image6.jpg",
+      "assets/photos/image7.jpg",
+      "assets/photos/image8.jpg",
+      "assets/photos/image9.jpg",
+      "assets/photos/image10.jpg"
+    ];
+    const LETTER_TEXT = "С днём рождения, моя любовь. Сегодня мы празднуем тебя — прекрасного человека, который приносит столько счастья в мою жизнь. Я хочу, чтобы этот новый год твоей жизни был наполнен нежными утрами, искренними улыбками, незабываемыми моментами и исполнением каждого маленького желания твоего сердца. Ты заслуживаешь чувствовать себя любимой не только сегодня, но и каждый день. Спасибо тебе за то, что ты мой самый любимый человек, моё самое дорогое воспоминание и то место, где моё сердце чувствует себя дома. Если бы я мог подарить тебе один подарок, который останется навсегда, я бы подарил тебе уверенность в том, насколько сильно тебя любят. Я хочу, чтобы, оглядываясь на этот день рождения, ты всегда помнила, какой особенной ты была для меня в этот момент и как я благодарен судьбе за то, что ты есть в моей жизни. Пусть этот год приблизит тебя ко всему, о чём ты мечтаешь, а я буду рядом с тобой в как можно большем количестве этих прекрасных моментов. С днём рождения, любимая. Я люблю тебя сильнее, чем могут объяснить любые слова. Навсегда твой, всем сердцем.";
+
+    // elements
+    const lockScreen = document.getElementById("lockScreen");
+    const lockArea = document.getElementById("lockArea");
+    const lockImage = document.getElementById("lockImage");
+    const messageGroup = document.getElementById("messageGroup");
+    const passcodeGroup = document.getElementById("passcodeGroup");
+    const keypadGroup = document.getElementById("keypadGroup");
+    const passDots = document.querySelectorAll(".pass-dot");
+    const errorText = document.getElementById("errorText");
+    const explosion = document.getElementById("explosion");
+    const bloomField = document.getElementById("bloomField");
+    const secondPage = document.getElementById("secondPage");
+    const roseDeco = document.getElementById("roseDeco");
+    const smileCard = document.getElementById("smileCard");
+    const photoGrid = document.getElementById("photoGrid");
+    const letterWords = document.getElementById("letterWords");
+    const footerSection = document.getElementById("footerSection");
+
+    let entered = "";
+    let busy = false;
+    let flowerId = 0;
+    let contentBuilt = false;
+    let exploded = false;
+
+    // ---- passcode logic ----
+    function updateDots() {
+      passDots.forEach((dot, i) => {
+        dot.classList.toggle("filled", i < entered.length);
+      });
+    }
+
+    function enterDigit(digit) {
+      if (busy) return;
+      if (entered.length >= 4) return;
+      entered += digit;
+      updateDots();
+      if (entered.length === 4) {
+        setTimeout(checkPassword, 100);
+      }
+    }
+
+    function deleteDigit() {
+      if (busy) return;
+      entered = entered.slice(0, -1);
+      // remove error state from dots if any
+      passDots.forEach(dot => dot.classList.remove("error"));
+      errorText.classList.remove("show");
+      updateDots();
+    }
+
+    function checkPassword() {
+      if (busy) return;
+      busy = true;
+      if (entered === PASSCODE) {
+        correctPassword();
+      } else {
+        wrongPassword();
+      }
+    }
+
+    function wrongPassword() {
+      // shake the lock area
+      lockArea.classList.add("shake");
+      
+      // turn dots red
+      passDots.forEach(dot => dot.classList.add("error"));
+
+      // show error text briefly
+      errorText.classList.add("show");
+
+      setTimeout(() => {
+        lockArea.classList.remove("shake");
+        // reset after animation
+        setTimeout(() => {
+          entered = "";
+          updateDots();
+          passDots.forEach(dot => dot.classList.remove("error"));
+          errorText.classList.remove("show");
+          busy = false;
+        }, 400);
+      }, 450);
+    }
+
+    function correctPassword() {
+      // 1. fade out message, passcode, keypad
+      messageGroup.classList.add("fade-up");
+      passcodeGroup.classList.add("fade-up");
+      keypadGroup.classList.add("fade-up");
+
+      // 2. slide lock down
+      setTimeout(() => {
+        lockArea.classList.add("slide-down");
+      }, 150);
+
+      // 3. hide lock image and trigger explosion
+      setTimeout(() => {
+        lockImage.classList.add("hide");
+        triggerExplosion();
+      }, 500);
+    }
+
+    // ---- explosion (like original first code) ----
+    function triggerExplosion() {
+      if (exploded) return;
+      exploded = true;
+
+      // position explosion at lock image center-bottom
+      const rect = lockImage.getBoundingClientRect();
+      explosion.style.left = (rect.left + rect.width / 2) + "px";
+      explosion.style.top = (rect.bottom - 2) + "px";
+
+      // start explosion
+      explosion.classList.remove("active");
+      void explosion.offsetWidth;
+      explosion.classList.add("active");
+
+      // after explosion, hide lock screen and start bloom rain
+      setTimeout(() => {
+        explosion.classList.remove("active");
+        lockScreen.classList.add("hidden");
+        startBloomRain();
+      }, 1500);
+    }
+
+    // ---- bloom rain ----
+    function startBloomRain() {
+      bloomField.classList.add("active");
+      const w = window.innerWidth, h = window.innerHeight;
+      const isMobile = Math.min(w, h) < 640;
+      let total = isMobile ? 320 : 500;
+      const cols = Math.ceil(Math.sqrt(total * (w / h)));
+      const rows = Math.ceil(total / cols);
+      const spacingX = (w + 40) / cols;
+      const spacingY = (h + 40) / rows;
+      let cells = [];
+      for (let r = 0; r < rows; r++) {
+        for (let c = 0; c < cols; c++) {
+          const xOff = (Math.random() - 0.5) * spacingX * 0.3;
+          const yOff = (Math.random() - 0.5) * spacingY * 0.3;
+          let x = (c / cols) * w + xOff;
+          let y = (r / rows) * h + yOff;
+          x = Math.max(-5, Math.min(w + 5, x));
+          y = Math.max(-5, Math.min(h + 5, y));
+          cells.push({ x, y });
+        }
+      }
+      for (let i = cells.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [cells[i], cells[j]] = [cells[j], cells[i]];
+      }
+      const maxFlowers = isMobile ? 400 : 650;
+      if (cells.length > maxFlowers) {
+        const step = Math.ceil(cells.length / maxFlowers);
+        cells = cells.filter((_, idx) => idx % step === 0);
+      }
+      while (cells.length < (isMobile ? 240 : 380)) {
+        cells.push({ x: Math.random() * w, y: Math.random() * h });
+      }
+
+      const baseSize = isMobile ? 55 : 80;
+      const sizeVar = isMobile ? 30 : 50;
+      let maxFinish = 0;
+      const rainWindow = isMobile ? 2200 : 2800;
+
+      cells.forEach(c => {
+        const size = baseSize + Math.random() * sizeVar;
+        const restRot = Math.random() * 32 - 16;
+        const startRot = (Math.random() < 0.5 ? -1 : 1) * (25 + Math.random() * 35);
+        const fallDist = c.y + size + 120 + Math.random() * 300;
+        const speed = 180 + Math.random() * 150;
+        const rdur = Math.max(0.5, fallDist / speed);
+        const launchDelay = Math.random() * (rainWindow / 1000);
+        const finish = launchDelay + rdur;
+        if (finish > maxFinish) maxFinish = finish;
+        const sway1 = (Math.random() < 0.5 ? -1 : 1) * (10 + Math.random() * 22);
+        const sway2 = -sway1 * (0.5 + Math.random() * 0.35);
+        const floatDur = 3.5 + Math.random() * 3;
+        const floatDelay = finish + Math.random() * 1.0;
+
+        const img = document.createElement("img");
+        const src = FLOWER_CYCLE[flowerId % FLOWER_CYCLE.length];
+        img.src = src;
+        img.alt = "";
+        img.className = "bloom-flower in";
+        img.draggable = false;
+        img.style.width = size + "px";
+        img.style.height = size + "px";
+        const finalX = c.x - size / 2;
+        const finalY = c.y - size / 2;
+        const startY = finalY - fallDist;
+        img.style.setProperty("--fx", finalX + "px");
+        img.style.setProperty("--startY", startY + "px");
+        img.style.setProperty("--fall", fallDist.toFixed(0) + "px");
+        img.style.setProperty("--sway1", sway1.toFixed(1) + "px");
+        img.style.setProperty("--sway2", sway2.toFixed(1) + "px");
+        img.style.setProperty("--rot-start", startRot.toFixed(1) + "deg");
+        img.style.setProperty("--rot-end", restRot.toFixed(1) + "deg");
+        img.style.setProperty("--ldelay", launchDelay.toFixed(2) + "s");
+        img.style.setProperty("--rdur", rdur.toFixed(2) + "s");
+        img.style.setProperty("--dur", floatDur.toFixed(2) + "s");
+        img.style.setProperty("--fdelay", floatDelay.toFixed(2) + "s");
+        img.dataset.id = flowerId;
+        img.dataset.x = c.x;
+        img.dataset.y = c.y;
+        img.dataset.size = size;
+        img.onerror = function() { this.onerror = null; this.src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80' viewBox='0 0 80 80'%3E%3Crect width='80' height='80' fill='%23f0e8e0'/%3E%3Ctext x='40' y='40' text-anchor='middle' dy='.3em' font-family='serif' font-size='30' fill='%23999'%3E🌸%3C/text%3E%3C/svg%3E"; };
+        bloomField.appendChild(img);
+        flowerId++;
+      });
+
+      // after rain ends, sweep flowers aside.
+      // bg1.png fades and softens at the exact same time,
+      // and finishes fading when the flower movement finishes.
+      setTimeout(() => {
+        bloomField.classList.add("bg-fading");
+
+        const cx = window.innerWidth / 2;
+        const shiftX = window.innerWidth / 2 + 200;
+        const maxDx = Math.max(cx, window.innerWidth - cx) + 200;
+        const flowers = bloomField.querySelectorAll(".bloom-flower");
+        flowers.forEach(el => {
+          const x = parseFloat(el.dataset.x);
+          const dir = x < cx ? -1 : 1;
+          const dx = Math.abs(x - cx);
+          const edgeFactor = Math.min(1, dx / maxDx);
+          const cdelay = (1 - edgeFactor) * 0.16;
+          el.style.setProperty("--cx", dir * shiftX + "px");
+          el.style.setProperty("--cy", (Math.random() * 50 - 25) + "px");
+          el.style.setProperty("--cdelay", cdelay.toFixed(2) + "s");
+          el.classList.remove("in");
+          el.classList.add("curtain-open");
+        });
+        setTimeout(() => {
+          // گل‌ها کاملاً کنار رفته‌اند و bg1.png هم کاملاً محو شده است.
+          // حالا لایه‌ی بارش را از روی صفحه برمی‌داریم تا صفحه‌ی نهایی دیده شود.
+          bloomField.classList.remove("active");
+          bloomField.classList.remove("bg-fading");
+          bloomField.setAttribute("aria-hidden", "true");
+
+          showSecondPageContent();
+        }, 1600);
+      }, maxFinish * 1000 + 500);
+    }
+
+    // ---- show second page content ----
+
+    // ===== POLAROID VIEWER =====
+    const polaroidOverlay = document.getElementById("polaroid-overlay");
+    const polaroidSlideImg = document.getElementById("polaroid-slide-img");
+    let currentPhotoIndex = 0;
+
+    function openPolaroid(index) {
+      if (!PHOTOS.length) return;
+
+      currentPhotoIndex = ((index % PHOTOS.length) + PHOTOS.length) % PHOTOS.length;
+      polaroidSlideImg.src = PHOTOS[currentPhotoIndex];
+
+      polaroidSlideImg.onerror = function() {
+        this.onerror = null;
+        this.src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300' viewBox='0 0 300 300'%3E%3Crect width='300' height='300' fill='%23ede5dc'/%3E%3Ctext x='150' y='150' text-anchor='middle' dy='.3em' font-family='serif' font-size='40' fill='%23999'%3E🖼️%3C/text%3E%3C/svg%3E";
+      };
+
+      polaroidOverlay.classList.add("shown");
+      polaroidOverlay.setAttribute("aria-hidden", "false");
+      document.body.style.overflow = "hidden";
+    }
+
+    function closePolaroid() {
+      polaroidOverlay.classList.remove("shown");
+      polaroidOverlay.setAttribute("aria-hidden", "true");
+      document.body.style.overflow = "";
+    }
+
+    polaroidOverlay.addEventListener("click", function(e) {
+      if (e.target === polaroidOverlay) {
+        closePolaroid();
+      }
+    });
+
+    document.addEventListener("keydown", function(e) {
+      if (e.key === "Escape" && polaroidOverlay.classList.contains("shown")) {
+        closePolaroid();
+      }
+    });
+
+    function showSecondPageContent() {
+      secondPage.classList.add("shown");
+      setTimeout(() => roseDeco.classList.add("spring"), 400);
+      observeOnce(smileCard, 0.3, el => el.classList.add("in"));
+      if (!contentBuilt) {
+        buildPhotoGrid();
+        buildLetter();
+        contentBuilt = true;
+      }
+      observeOnce(document.getElementById("photoGridSection"), 0.15, () => {
+        const cards = document.querySelectorAll(".photo-card");
+        cards.forEach((card, i) => {
+          setTimeout(() => card.classList.add("in"), i * 130);
+        });
+      });
+      observeOnce(document.getElementById("letterSection"), 0.15, () => {
+        const words = document.querySelectorAll(".letter-card .word");
+        let i = 0;
+        function next() {
+          if (i >= words.length) return;
+          words[i].classList.add("in");
+          i++;
+          setTimeout(next, 90);
+        }
+        next();
+      });
+      const fh2 = document.querySelector("#footerSection h2");
+      const fp = document.querySelector("#footerSection p");
+      observeOnce(document.getElementById("footerSection"), 0.3, () => {
+        fh2.classList.add("in");
+        fp.classList.add("in");
+      });
+    }
+
+    function observeOnce(el, threshold, cb) {
+      if (!el) return;
+      const obs = new IntersectionObserver(entries => {
+        entries.forEach(e => {
+          if (e.isIntersecting) {
+            obs.disconnect();
+            cb(el);
+          }
+        });
+      }, { threshold });
+      obs.observe(el);
+    }
+
+    function buildPhotoGrid() {
+      // balanced collage with dense placement and smaller gaps
+      const sizes = ["lg", "sm", "md", "lg", "sm", "md", "lg", "sm", "md", "lg"];
+      const tiltAngles = [-6, 4, -4, 7, -5, 3, -7, 5, -3, 6, -4, 8, -5, 4, -6];
+      PHOTOS.forEach((src, idx) => {
+        const card = document.createElement("div");
+        let sizeClass = sizes[idx % sizes.length];
+        card.className = "photo-card size-" + sizeClass;
+        let tilt = 0;
+        if (Math.random() < 0.7) tilt = tiltAngles[idx % tiltAngles.length] + (Math.random() - 0.5) * 2;
+        card.style.setProperty("--rot", tilt + "deg");
+        const img = document.createElement("img");
+        img.src = src;
+        img.alt = "";
+        img.loading = "lazy";
+        img.onerror = function() { this.onerror = null; this.src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300' viewBox='0 0 300 300'%3E%3Crect width='300' height='300' fill='%23ede5dc'/%3E%3Ctext x='150' y='150' text-anchor='middle' dy='.3em' font-family='serif' font-size='40' fill='%23999'%3E🖼️%3C/text%3E%3C/svg%3E"; };
+        // Clicking a photo opens the fixed Polaroid viewer.
+        (function(idx) {
+          card.addEventListener("click", function() {
+            openPolaroid(idx);
+          });
+        })(idx);
+
+        card.appendChild(img);
+        photoGrid.appendChild(card);
+      });
+    }
+
+    function buildLetter() {
+      const words = LETTER_TEXT.split(/\s+/);
+      words.forEach(w => {
+        const span = document.createElement("span");
+        span.className = "word";
+        span.textContent = w;
+        letterWords.appendChild(span);
+        letterWords.appendChild(document.createTextNode(" "));
+      });
+    }
+
+    // ---- keypad events ----
+    document.querySelectorAll(".key").forEach(btn => {
+      btn.addEventListener("click", function() {
+        const key = this.dataset.key;
+        if (key === "delete") deleteDigit();
+        else enterDigit(key);
+        this.classList.add("pressed");
+        setTimeout(() => this.classList.remove("pressed"), 120);
+      });
+    });
+
+    document.addEventListener("keydown", e => {
+      if (!lockScreen.classList.contains("hidden")) {
+        if (e.key >= "0" && e.key <= "9") enterDigit(e.key);
+        if (e.key === "Backspace") deleteDigit();
+      }
+    });
+
+    updateDots();
+
+    document.querySelectorAll("img").forEach(img => {
+      const src = img.getAttribute("src");
+      if (src && !src.startsWith("data:")) {
+        img.onerror = function() {
+          this.onerror = null;
+          this.src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200' viewBox='0 0 200 200'%3E%3Crect width='200' height='200' fill='%23f0e8e0'/%3E%3Ctext x='100' y='100' text-anchor='middle' dy='.3em' font-family='serif' font-size='40' fill='%23999'%3E🖼️%3C/text%3E%3C/svg%3E";
+        };
+      }
+    });
+
+    document.addEventListener("contextmenu", e => e.preventDefault());
+
+  })();
+</script>
+</body>
+</html>
