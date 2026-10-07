@@ -1,2526 +1,1690 @@
 <!DOCTYPE html>
-<html lang="ru" dir="ltr">
+<html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-
-    <title>💖 Особенное сообщение для Нии 💖</title>
-
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@500;700&family=Playfair+Display:wght@500;600&family=Poppins:wght@300;400;500&family=Vazirmatn:wght@300;400;500;700&display=swap" rel="stylesheet">
-
-    <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-
-        body {
-            font-family: 'Vazirmatn', 'Poppins', sans-serif;
-            background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 50%, #fecfef 100%);
-            min-height: 100vh;
-            overflow-x: hidden;
-            position: relative;
-        }
-
-        /* ================= PASSWORD ================= */
-
-        .password-screen {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 99999;
-            padding: 20px;
-        }
-
-        .password-box {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(20px);
-            padding: 50px 40px;
-            border-radius: 30px;
-            text-align: center;
-            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.3);
-            max-width: 400px;
-            width: 100%;
-            animation: fadeInUp 0.8s ease;
-        }
-
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .password-box .lock-icon {
-            font-size: 60px;
-            margin-bottom: 20px;
-            animation: pulse 2s ease-in-out infinite;
-        }
-
-        @keyframes pulse {
-            0%, 100% {
-                transform: scale(1);
-            }
-
-            50% {
-                transform: scale(1.1);
-            }
-        }
-
-        .password-box h2 {
-            font-family: 'Dancing Script', cursive;
-            font-size: 2rem;
-            color: #764ba2;
-            margin-bottom: 10px;
-        }
-
-        .password-box p {
-            color: #666;
-            margin-bottom: 25px;
-            font-size: 0.95rem;
-        }
-
-        .password-box input {
-            width: 100%;
-            padding: 15px 20px;
-            border: 2px solid #e0e0e0;
-            border-radius: 50px;
-            font-size: 1rem;
-            text-align: center;
-            outline: none;
-            transition: all 0.3s ease;
-            margin-bottom: 15px;
-        }
-
-        .password-box input:focus {
-            border-color: #764ba2;
-            box-shadow: 0 0 15px rgba(118, 75, 162, 0.2);
-        }
-
-        .password-box button {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
-            border: none;
-            padding: 15px 50px;
-            border-radius: 50px;
-            font-size: 1.1rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 10px 30px rgba(118, 75, 162, 0.4);
-        }
-
-        .password-box button:hover {
-            transform: scale(1.05);
-        }
-
-        .password-box .hint {
-            margin-top: 20px;
-            font-size: 0.85rem;
-            color: #999;
-            font-style: italic;
-        }
-
-        .password-box .error {
-            color: #e74c3c;
-            font-size: 0.9rem;
-            margin-top: 10px;
-            display: block;
-        }
-
-        /* ================= MAIN ================= */
-
-        .main-content {
-            display: block;
-        }
-
-        .bg-hearts {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            overflow: hidden;
-            z-index: 0;
-        }
-
-        .bg-heart {
-            position: absolute;
-            font-size: 20px;
-            opacity: 0.3;
-            animation: floatBg 15s infinite ease-in-out;
-        }
-
-        @keyframes floatBg {
-            0%, 100% {
-                transform: translateY(100vh) rotate(0deg);
-                opacity: 0;
-            }
-
-            10%, 90% {
-                opacity: 0.3;
-            }
-
-            100% {
-                transform: translateY(-100px) rotate(720deg);
-                opacity: 0;
-            }
-        }
-
-        .sparkle {
-            position: fixed;
-            width: 6px;
-            height: 6px;
-            background: white;
-            border-radius: 50%;
-            pointer-events: none;
-            animation: sparkle 2s infinite;
-        }
-
-        @keyframes sparkle {
-            0%, 100% {
-                opacity: 0;
-                transform: scale(0);
-            }
-
-            50% {
-                opacity: 1;
-                transform: scale(1);
-            }
-        }
-
-        /* ================= WRAPPER ================= */
-
-        .wrapper {
-            min-height: auto;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 20px 20px 0;
-            position: relative;
-            z-index: 1;
-        }
-
-        .wrapper.letter-view {
-            align-items: flex-start;
-            justify-content: center;
-            min-height: auto;
-            padding-top: 12px;
-            padding-bottom: 24px;
-        }
-
-        /* ================= CARD ================= */
-
-        .card {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(20px);
-            max-width: 450px;
-            width: 100%;
-            padding: 40px 35px;
-            border-radius: 30px;
-            text-align: center;
-            box-shadow:
-                0 25px 60px rgba(255, 105, 180, 0.3),
-                0 0 0 1px rgba(255, 255, 255, 0.5),
-                inset 0 1px 0 rgba(255, 255, 255, 0.8);
-            position: relative;
-            overflow: visible;
-            animation: cardFloat 3s ease-in-out infinite;
-        }
-
-        @keyframes cardFloat {
-            0%, 100% {
-                transform: translateY(0);
-            }
-
-            50% {
-                transform: translateY(-10px);
-            }
-        }
-
-        .card::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: linear-gradient(
-                45deg,
-                transparent,
-                rgba(255, 182, 193, 0.1),
-                transparent
-            );
-            animation: shimmer 3s infinite;
-        }
-
-        @keyframes shimmer {
-            0% {
-                transform: translateX(-100%) rotate(45deg);
-            }
-
-            100% {
-                transform: translateX(100%) rotate(45deg);
-            }
-        }
-
-        .cute-image {
-            font-size: 80px;
-            margin-bottom: 20px;
-            animation: bounce 2s ease-in-out infinite;
-            display: inline-block;
-        }
-
-        @keyframes bounce {
-            0%, 100% {
-                transform: translateY(0) scale(1);
-            }
-
-            50% {
-                transform: translateY(-15px) scale(1.1);
-            }
-        }
-
-        h1 {
-            font-family: 'Dancing Script', cursive;
-            font-size: 2.5rem;
-            color: #d63384;
-            margin-bottom: 15px;
-            text-shadow: 2px 2px 4px rgba(214, 51, 132, 0.2);
-            position: relative;
-            z-index: 1;
-        }
-
-        .subtitle {
-            color: #888;
-            font-size: 1rem;
-            margin-bottom: 10px;
-            position: relative;
-            z-index: 1;
-        }
-
-        .hint {
-            color: #aaa;
-            font-size: 0.8rem;
-            font-style: italic;
-            margin-top: 5px;
-        }
-
-        /* ================= BUTTONS ================= */
-
-        .buttons {
-            margin-top: 35px;
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            flex-wrap: wrap;
-            min-height: 120px;
-            align-items: center;
-            position: relative;
-            z-index: 1;
-        }
-
-        button {
-            padding: 16px 40px;
-            border-radius: 50px;
-            border: none;
-            font-size: 1.1rem;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            position: relative;
-        }
-
-        #yesBtn {
-            background: linear-gradient(135deg, #ff6b9d, #ff4d94, #ff3385);
-            color: white;
-            box-shadow:
-                0 10px 30px rgba(255, 77, 148, 0.5),
-                0 0 0 0 rgba(255, 77, 148, 0.4);
-            animation: yesGlow 1.5s ease-in-out infinite;
-            font-size: 1.2rem;
-            padding: 18px 50px;
-        }
-
-        @keyframes yesGlow {
-            0%, 100% {
-                box-shadow:
-                    0 10px 30px rgba(255, 77, 148, 0.5),
-                    0 0 0 0 rgba(255, 77, 148, 0.4);
-            }
-
-            50% {
-                box-shadow:
-                    0 15px 40px rgba(255, 77, 148, 0.6),
-                    0 0 20px 5px rgba(255, 77, 148, 0.3);
-            }
-        }
-
-        #yesBtn:hover {
-            transform: scale(1.15);
-        }
-
-        #yesBtn::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(
-                90deg,
-                transparent,
-                rgba(255, 255, 255, 0.3),
-                transparent
-            );
-            animation: btnShine 2s infinite;
-        }
-
-        @keyframes btnShine {
-            0% {
-                left: -100%;
-            }
-
-            50%, 100% {
-                left: 100%;
-            }
-        }
-
-        #noBtn {
-            background: linear-gradient(135deg, #ccc, #999) !important;
-            color: #666 !important;
-            font-size: 0.9rem;
-            padding: 10px 24px;
-            transition: all 0.4s ease-out;
-            z-index: 100;
-            border: 2px solid #aaa;
-            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
-            font-weight: 400;
-            white-space: nowrap;
-        }
-
-        #noBtn:hover {
-            background: linear-gradient(135deg, #ddd, #bbb) !important;
-        }
-
-        /* ================= POPUP ================= */
-
-        .cute-popup {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%) scale(0);
-            background: linear-gradient(135deg, #fff, #fff5f8);
-            padding: 20px 30px;
-            border-radius: 20px;
-            box-shadow: 0 10px 40px rgba(255, 105, 180, 0.4);
-            z-index: 10000;
-            text-align: center;
-            font-size: 1.2rem;
-            color: #d63384;
-            animation: popupAnim 2s ease forwards;
-            pointer-events: none;
-        }
-
-        @keyframes popupAnim {
-            0% {
-                transform: translate(-50%, -50%) scale(0);
-                opacity: 0;
-            }
-
-            15% {
-                transform: translate(-50%, -50%) scale(1.1);
-                opacity: 1;
-            }
-
-            25% {
-                transform: translate(-50%, -50%) scale(1);
-            }
-
-            75% {
-                transform: translate(-50%, -50%) scale(1);
-                opacity: 1;
-            }
-
-            100% {
-                transform: translate(-50%, -50%) scale(0.8);
-                opacity: 0;
-            }
-        }
-
-        /* ================= RESULT ================= */
-
-        .result {
-            display: none;
-        }
-
-        .result.show {
-            display: block;
-            animation: resultReveal 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
-        }
-
-        @keyframes resultReveal {
-            0% {
-                opacity: 0;
-                transform: scale(0.3) rotate(-10deg);
-            }
-
-            50% {
-                transform: scale(1.1) rotate(3deg);
-            }
-
-            100% {
-                opacity: 1;
-                transform: scale(1) rotate(0deg);
-            }
-        }
-
-        .result h1 {
-            font-size: 2.8rem;
-            margin-bottom: 20px;
-        }
-
-        .result .cute-image {
-            font-size: 100px;
-            animation: heartBeat 1s ease-in-out infinite;
-        }
-
-        @keyframes heartBeat {
-            0%, 100% {
-                transform: scale(1);
-            }
-
-            15% {
-                transform: scale(1.3);
-            }
-
-            30% {
-                transform: scale(1);
-            }
-
-            45% {
-                transform: scale(1.2);
-            }
-
-            60% {
-                transform: scale(1);
-            }
-        }
-
-        .message-box {
-            background: linear-gradient(135deg, #fff5f8, #ffe8f0);
-            padding: 25px;
-            border-radius: 20px;
-            margin-top: 25px;
-            color: #555;
-            font-size: 1rem;
-            line-height: 2;
-            border: 2px solid rgba(255, 105, 180, 0.2);
-            position: relative;
-            z-index: 1;
-            text-align: left;
-        }
-
-        .message-box strong {
-            font-family: 'Dancing Script', cursive;
-            font-size: 1.4rem;
-            color: #d63384;
-        }
-
-        .date-display {
-            margin-top: 20px;
-            padding: 15px;
-            background: rgba(255, 77, 148, 0.1);
-            border-radius: 15px;
-            font-size: 0.9rem;
-            color: #d63384;
-        }
-
-        .glow {
-            animation: cardGlow 2s infinite alternate;
-        }
-
-        @keyframes cardGlow {
-            0% {
-                box-shadow:
-                    0 25px 60px rgba(255, 105, 180, 0.3),
-                    0 0 30px rgba(255, 105, 180, 0.2);
-            }
-
-            100% {
-                box-shadow:
-                    0 25px 60px rgba(255, 105, 180, 0.5),
-                    0 0 60px rgba(255, 105, 180, 0.4);
-            }
-        }
-
-        /* ================= HEARTS ================= */
-
-        .heart {
-            position: fixed;
-            font-size: 24px;
-            animation: floatUp 4s ease-out forwards;
-            z-index: 100;
-            pointer-events: none;
-        }
-
-        @keyframes floatUp {
-            0% {
-                transform: translateY(0) rotate(0deg) scale(1);
-                opacity: 1;
-            }
-
-            100% {
-                transform: translateY(-100vh) rotate(720deg) scale(0);
-                opacity: 0;
-            }
-        }
-
-        .confetti {
-            position: fixed;
-            width: 10px;
-            height: 10px;
-            animation: confettiFall 3s linear forwards;
-            z-index: 100;
-            pointer-events: none;
-        }
-
-        @keyframes confettiFall {
-            0% {
-                transform: translateY(-100px) rotate(0deg);
-                opacity: 1;
-            }
-
-            100% {
-                transform: translateY(100vh) rotate(720deg);
-                opacity: 0;
-            }
-        }
-
-        /* ================= MUSIC ================= */
-
-        .music-btn {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            border: none;
-            background: linear-gradient(135deg, #ff6b9d, #ff4d94);
-            color: white;
-            font-size: 1.5rem;
-            cursor: pointer;
-            z-index: 10000;
-            box-shadow: 0 5px 20px rgba(255, 77, 148, 0.4);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .music-btn.playing {
-            animation: musicPulse 1s ease-in-out infinite;
-        }
-
-        @keyframes musicPulse {
-            0%, 100% {
-                transform: scale(1);
-            }
-
-            50% {
-                transform: scale(1.1);
-            }
-        }
-
-        /* ================= QUOTES ================= */
-
-        .love-quotes {
-            background: linear-gradient(135deg, #fff5f8, #ffe8f0);
-            padding: 15px 20px;
-            border-radius: 15px;
-            margin: 15px 0;
-            border-right: 4px solid #ff6b9d;
-        }
-
-        .quote {
-            font-family: 'Dancing Script', cursive;
-            font-size: 1.2rem;
-            color: #d63384;
-            margin: 0;
-            font-style: italic;
-        }
-
-        .footer-text {
-            color: #aaa;
-            font-size: 0.8rem;
-            margin-top: 20px;
-            font-style: italic;
-        }
-
-        .footer-love {
-            color: #ff6b9d;
-            font-size: 0.85rem;
-            margin-top: 20px;
-            animation: fadeInOut 2s ease-in-out infinite;
-        }
-
-        @keyframes fadeInOut {
-            0%, 100% {
-                opacity: 0.6;
-            }
-
-            50% {
-                opacity: 1;
-            }
-        }
-
-        /* ================= REASONS ================= */
-
-        .reasons-box {
-            background: linear-gradient(135deg, #fff0f5, #ffe4ec);
-            padding: 20px;
-            border-radius: 15px;
-            margin-top: 20px;
-            text-align: left;
-            border: 2px dashed #ffb6c1;
-        }
-
-        .reasons-box strong {
-            font-family: 'Dancing Script', cursive;
-            font-size: 1.3rem;
-            color: #d63384;
-        }
-
-        .love-list {
-            list-style: none;
-            padding: 0;
-            margin: 15px 0 0;
-        }
-
-        .love-list li {
-            padding: 8px 0;
-            color: #666;
-            font-size: 0.95rem;
-            border-bottom: 1px dashed #ffd6e8;
-        }
-
-        .love-list li:last-child {
-            border-bottom: none;
-        }
-
-        /* ================= PAGE BUTTONS ================= */
-
-        .next-page-btn,
-        .prev-page-btn {
-            background: linear-gradient(135deg, #ff6b9d, #ff4d94);
-            color: white;
-            border: none;
-            padding: 15px 35px;
-            border-radius: 50px;
-            font-size: 1.1rem;
-            font-weight: 500;
-            cursor: pointer;
-            margin-top: 25px;
-            box-shadow: 0 8px 25px rgba(255, 77, 148, 0.4);
-            transition: all 0.3s ease;
-        }
-
-        .next-page-btn:hover,
-        .prev-page-btn:hover {
-            transform: scale(1.05);
-        }
-
-        .page-2,
-        .page-3 {
-            display: none;
-            perspective: 1500px;
-        }
-
-        .page-2.show,
-        .page-3.show {
-            display: block;
-        }
-
-        .personal-message {
-            background: linear-gradient(135deg, #fff8fa, #ffebf0);
-            font-size: 1.05rem;
-            line-height: 2;
-        }
-
-        .final-message {
-            background: linear-gradient(135deg, #fff0f5, #ffe4ec);
-            font-size: 1.1rem;
-            line-height: 2;
-            border: 2px solid rgba(255, 105, 180, 0.3);
-        }
-
-        /* ================= FLIP ================= */
-
-        .flip-out {
-            animation: flipOut 0.8s ease-in-out forwards;
-            transform-origin: left center;
-        }
-
-        @keyframes flipOut {
-            0% {
-                transform: perspective(1500px) rotateY(0deg);
-                opacity: 1;
-            }
-
-            100% {
-                transform: perspective(1500px) rotateY(-90deg);
-                opacity: 0;
-            }
-        }
-
-        .flip-in {
-            animation: flipIn 0.8s ease-in-out forwards;
-            transform-origin: right center;
-        }
-
-        @keyframes flipIn {
-            0% {
-                transform: perspective(1500px) rotateY(90deg);
-                opacity: 0;
-            }
-
-            100% {
-                transform: perspective(1500px) rotateY(0deg);
-                opacity: 1;
-            }
-        }
-
-        .flip-out-reverse {
-            animation: flipOutReverse 0.8s ease-in-out forwards;
-            transform-origin: right center;
-        }
-
-        @keyframes flipOutReverse {
-            0% {
-                transform: perspective(1500px) rotateY(0deg);
-                opacity: 1;
-            }
-
-            100% {
-                transform: perspective(1500px) rotateY(90deg);
-                opacity: 0;
-            }
-        }
-
-        .flip-in-reverse {
-            animation: flipInReverse 0.8s ease-in-out forwards;
-            transform-origin: left center;
-        }
-
-        @keyframes flipInReverse {
-            0% {
-                transform: perspective(1500px) rotateY(-90deg);
-                opacity: 0;
-            }
-
-            100% {
-                transform: perspective(1500px) rotateY(0deg);
-                opacity: 1;
-            }
-        }
-
-        /* ================= PHOTOS ================= */
-
-        .floating-photo {
-            position: fixed;
-            border-radius: 12px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-            z-index: 10;
-            pointer-events: none;
-            animation: floatPhotoUp 15s ease-out forwards;
-            border: 3px solid white;
-            object-fit: cover;
-            bottom: -100px;
-            opacity: 0.7;
-        }
-
-        .floating-photo.small {
-            width: 50px;
-            height: 50px;
-        }
-
-        .floating-photo.medium {
-            width: 70px;
-            height: 70px;
-        }
-
-        .floating-photo.large {
-            width: 90px;
-            height: 90px;
-        }
-
-        @keyframes floatPhotoUp {
-            0% {
-                transform: translateY(0) rotate(0deg) scale(0.5);
-                opacity: 0;
-            }
-
-            10% {
-                opacity: 0.6;
-                transform: translateY(-10vh) rotate(3deg) scale(1);
-            }
-
-            50% {
-                opacity: 0.7;
-                transform: translateY(-50vh) rotate(-2deg) scale(1);
-            }
-
-            90% {
-                opacity: 0.5;
-                transform: translateY(-90vh) rotate(2deg) scale(0.9);
-            }
-
-            100% {
-                transform: translateY(-110vh) rotate(0deg) scale(0.8);
-                opacity: 0;
-            }
-        }
-
-        .photos-container {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 50;
-            overflow: hidden;
-        }
-
-        .btn-group {
-            display: flex;
-            gap: 15px;
-            justify-content: center;
-            flex-wrap: wrap;
-            margin-top: 25px;
-        }
-
-        .message-box,
-        .reasons-box,
-        .love-quotes,
-        .personal-message,
-        .final-message {
-            text-align: left;
-        }
-
-        .subtitle,
-        .hint,
-        .footer-text,
-        .footer-love {
-            text-align: center;
-        }
-
-        /* ================= MOBILE ================= */
-
-        @media (max-width: 480px) {
-            .card {
-                padding: 30px 25px;
-                margin: 10px;
-                border-radius: 25px;
-            }
-
-            h1 {
-                font-size: 2rem;
-            }
-
-            .cute-image {
-                font-size: 60px;
-            }
-
-            .buttons {
-                flex-direction: column;
-                gap: 15px;
-                min-height: 150px;
-            }
-
-            #yesBtn {
-                padding: 16px 45px;
-                font-size: 1.1rem;
-            }
-
-            #noBtn {
-                padding: 8px 20px;
-                font-size: 0.8rem;
-            }
-
-            .result .cute-image {
-                font-size: 70px;
-            }
-
-            .message-box {
-                padding: 20px;
-                font-size: 0.9rem;
-            }
-
-            .music-btn {
-                width: 45px;
-                height: 45px;
-                font-size: 1.3rem;
-                top: 15px;
-                right: 15px;
-            }
-
-            .quote {
-                font-size: 1rem;
-            }
-
-            .reasons-box {
-                padding: 15px;
-            }
-
-            .love-list li {
-                font-size: 0.9rem;
-            }
-
-            .next-page-btn,
-            .prev-page-btn {
-                padding: 12px 28px;
-                font-size: 1rem;
-            }
-
-            .personal-message {
-                font-size: 0.95rem;
-                line-height: 1.8;
-            }
-
-            .wrapper.letter-view {
-                align-items: center;
-                justify-content: center;
-                padding-top: 0;
-                padding-bottom: 0;
-            }
-
-            .cute-popup {
-                font-size: 1rem;
-                padding: 15px 20px;
-                max-width: 280px;
-            }
-
-            .floating-photo.small {
-                width: 50px;
-                height: 50px;
-            }
-
-            .floating-photo.medium {
-                width: 70px;
-                height: 70px;
-            }
-
-            .floating-photo.large {
-                width: 90px;
-                height: 90px;
-            }
-        }
-
-        @media (max-width: 360px) {
-            h1 {
-                font-size: 1.7rem;
-            }
-
-            .cute-image {
-                font-size: 50px;
-            }
-
-            .card {
-                padding: 25px 20px;
-            }
-        }
-
-        @media (max-width: 600px) {
-            .floating-photo.small {
-                width: 40px;
-                height: 40px;
-            }
-
-            .floating-photo.medium {
-                width: 55px;
-                height: 55px;
-            }
-
-            .floating-photo.large {
-                width: 70px;
-                height: 70px;
-            }
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Для тебя</title>
+
+<style>
+
+/* =========================================================
+   RESET
+========================================================= */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html,
+body {
+    width: 100%;
+    min-height: 100%;
+    overflow: hidden;
+}
+
+body {
+    font-family: Georgia, "Times New Roman", serif;
+    background: #faf6f0;
+}
+
+
+/* =========================================================
+   LOCK SCREEN
+========================================================= */
+
+.lock-screen {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    background:
+        radial-gradient(
+            circle at 50% 38%,
+            rgba(255, 80, 50, .16),
+            transparent 32%
+        ),
+        linear-gradient(
+            180deg,
+            #980005 0%,
+            #850004 48%,
+            #680003 100%
+        );
+
+    color: #f5dfb0;
+
+    transition:
+        opacity .75s ease,
+        visibility .75s ease;
+}
+
+.lock-screen.hidden {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+}
+
+
+/* =========================================================
+   LOCK AREA
+========================================================= */
+
+.lock-area {
+    width: clamp(140px, 18vw, 210px);
+    height: clamp(140px, 18vw, 210px);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    margin-bottom: 8px;
+
+    transition:
+        transform .7s cubic-bezier(.1,.88,.18,1),
+        opacity .5s ease;
+}
+
+.lock-area.slide-down {
+    transform: translateY(180px);
+    opacity: 0;
+}
+
+
+/* =========================================================
+   LOCK IMAGE
+========================================================= */
+
+.lock-image {
+    width: 100%;
+    height: 100%;
+
+    object-fit: contain;
+
+    display: block;
+
+    user-select: none;
+    pointer-events: none;
+
+    filter:
+        drop-shadow(0 8px 20px rgba(0,0,0,.3));
+
+    animation:
+        floating 4s ease-in-out infinite;
+}
+
+@keyframes floating {
+
+    0%,
+    100% {
+        transform:
+            translateY(0)
+            rotate(0deg);
+    }
+
+    50% {
+        transform:
+            translateY(-6px)
+            rotate(-1deg);
+    }
+}
+
+
+/* =========================================================
+   WRONG PASSWORD SHAKE
+========================================================= */
+
+.lock-area.shake {
+    animation: shake .45s ease;
+}
+
+@keyframes shake {
+
+    0%,
+    100% {
+        transform: translateX(0);
+    }
+
+    20% {
+        transform: translateX(-9px);
+    }
+
+    40% {
+        transform: translateX(9px);
+    }
+
+    60% {
+        transform: translateX(-7px);
+    }
+
+    80% {
+        transform: translateX(7px);
+    }
+}
+
+
+/* =========================================================
+   MESSAGE
+========================================================= */
+
+.message {
+    text-align: center;
+
+    margin-bottom: 6px;
+
+    transition:
+        opacity .35s ease,
+        transform .35s ease;
+}
+
+.message.fade-up {
+    opacity: 0;
+    transform: translateY(22px);
+}
+
+.title {
+    font-family:
+        "Brush Script MT",
+        "Segoe Script",
+        cursive;
+
+    font-size:
+        clamp(25px, 3vw, 38px);
+
+    font-weight: 500;
+
+    color: #f7e5bd;
+}
+
+.subtitle {
+    margin-top: 2px;
+
+    font-family:
+        "Brush Script MT",
+        "Segoe Script",
+        cursive;
+
+    font-size:
+        clamp(19px, 2vw, 28px);
+
+    color: #f0d6a4;
+
+    font-style: italic;
+}
+
+.secret {
+    margin-top: 3px;
+
+    color: #d9b88a;
+
+    font-size:
+        clamp(11px, .9vw, 15px);
+
+    font-style: italic;
+}
+
+
+/* =========================================================
+   PASSWORD DOTS
+========================================================= */
+
+.passcode {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 9px;
+
+    margin:
+        11px 0 13px;
+
+    transition:
+        opacity .35s ease,
+        transform .35s ease;
+}
+
+.passcode.fade-up {
+    opacity: 0;
+    transform: translateY(18px);
+}
+
+.pass-dot {
+    width: 10px;
+    height: 10px;
+
+    border-radius: 50%;
+
+    border:
+        1.5px solid
+        rgba(245,220,180,.5);
+
+    background:
+        rgba(255,255,255,.08);
+
+    transition: .2s ease;
+}
+
+.pass-dot.filled {
+    background: #f0d095;
+
+    border-color: #f0d095;
+
+    transform: scale(1.15);
+
+    box-shadow:
+        0 2px 8px
+        rgba(255,210,130,.25);
+}
+
+.pass-dot.error {
+    background: #ff6262;
+
+    border-color: #ff6262;
+}
+
+
+/* =========================================================
+   KEYPAD
+========================================================= */
+
+.keypad {
+    display: grid;
+
+    grid-template-columns:
+        repeat(3, 1fr);
+
+    gap: 8px;
+
+    width:
+        min(85vw, 320px);
+
+    margin-top: 4px;
+
+    transition:
+        opacity .38s ease,
+        transform .38s ease;
+}
+
+.keypad.fade-up {
+    opacity: 0;
+
+    transform:
+        translateY(28px);
+
+    pointer-events: none;
+}
+
+.key {
+    height:
+        clamp(40px, 5.5vh, 52px);
+
+    border-radius: 8px;
+
+    border:
+        1px solid
+        rgba(255,220,180,.22);
+
+    background:
+        linear-gradient(
+            180deg,
+            rgba(255,255,255,.14),
+            rgba(255,220,200,.08)
+        );
+
+    color: #f5dfb0;
+
+    font-size:
+        clamp(14px, 1.2vw, 20px);
+
+    font-family: inherit;
+
+    cursor: pointer;
+
+    box-shadow:
+        0 3px 8px
+        rgba(0,0,0,.12),
+
+        inset 0 1px 0
+        rgba(255,255,255,.12);
+
+    outline: none;
+
+    transition:
+        transform .08s ease,
+        background .15s ease;
+}
+
+.key:hover {
+    background:
+        rgba(255,255,255,.16);
+}
+
+.key:active {
+    transform:
+        scale(.92)
+        translateY(1px);
+}
+
+.key.delete {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.backspace-icon {
+    width: 20px;
+    height: 16px;
+}
+
+.error-text {
+    min-height: 1.4em;
+
+    margin-top: 10px;
+
+    color: #ffb0a8;
+
+    font-size:
+        clamp(11px, .8vw, 14px);
+
+    font-style: italic;
+
+    opacity: 0;
+
+    transition:
+        opacity .2s ease;
+}
+
+.error-text.show {
+    opacity: 1;
+}
+
+
+/* =========================================================
+   DRAWER
+========================================================= */
+
+.drawer {
+    position: fixed;
+
+    left: 0;
+    right: 0;
+    bottom: 0;
+
+    width: 100%;
+    height: 100%;
+
+    z-index: 100;
+
+    overflow: hidden;
+
+    background:
+        radial-gradient(
+            ellipse at 80% 15%,
+            rgba(220,90,45,.25),
+            transparent 30%
+        ),
+
+        radial-gradient(
+            ellipse at 20% 50%,
+            rgba(120,10,20,.35),
+            transparent 45%
+        ),
+
+        linear-gradient(
+            135deg,
+            #681016,
+            #45080d 55%,
+            #290306
+        );
+
+    transform:
+        translateY(100%);
+
+    transition:
+        transform
+        1.25s
+        cubic-bezier(.22,.85,.25,1);
+
+    display: flex;
+
+    justify-content: center;
+    align-items: center;
+}
+
+.drawer.open {
+    transform:
+        translateY(0);
+}
+
+.drawer::before {
+    content: "";
+
+    position: absolute;
+
+    inset: 0;
+
+    opacity: .10;
+
+    background:
+        radial-gradient(
+            circle,
+            rgba(255,255,255,.35) 1px,
+            transparent 2px
+        );
+
+    background-size:
+        150px 150px;
+
+    pointer-events: none;
+}
+
+
+/* =========================================================
+   CONTENT
+========================================================= */
+
+.content {
+    position: relative;
+
+    z-index: 2;
+
+    width:
+        min(700px, 90vw);
+
+    text-align: center;
+}
+
+.page-title {
+    color: #f5e2b5;
+
+    font-size:
+        clamp(29px, 4vw, 45px);
+
+    margin-bottom: 12px;
+
+    text-shadow:
+        0 3px 15px
+        rgba(0,0,0,.6);
+}
+
+.page-subtitle {
+    color: #e3c58d;
+
+    font-size: 16px;
+
+    font-style: italic;
+
+    margin-bottom: 38px;
+}
+
+
+/* =========================================================
+   ENVELOPE CONTAINER
+========================================================= */
+
+.envelope-area {
+    position: relative;
+
+    width: min(520px, 90vw);
+
+    height: 330px;
+
+    margin: auto;
+
+    cursor: pointer;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    user-select: none;
+}
+
+
+/* =========================================================
+   ENVELOPE IMAGES
+========================================================= */
+
+.envelope-image {
+    position: absolute;
+
+    left: 50%;
+    top: 50%;
+
+    width: 100%;
+    height: 100%;
+
+    transform:
+        translate(-50%, -50%);
+
+    object-fit: contain;
+
+    display: block;
+
+    user-select: none;
+
+    pointer-events: none;
+
+    filter:
+        drop-shadow(
+            0 20px 35px
+            rgba(0,0,0,.42)
+        );
+
+    opacity: 0;
+
+    transition:
+        opacity .12s linear;
+}
+
+.envelope-image.active {
+    opacity: 1;
+}
+
+
+/* =========================================================
+   H.png
+========================================================= */
+
+#waxSeal {
+
+    position: absolute;
+
+    z-index: 50;
+
+    left: 50%;
+    top: 50%;
+
+    width: 52px;
+    height: 52px;
+
+    transform:
+        translate(-50%, -50%);
+
+    object-fit: contain;
+
+    display: block;
+
+    opacity: 1;
+
+    visibility: visible;
+
+    pointer-events: none;
+
+    user-select: none;
+
+    filter:
+        drop-shadow(
+            0 4px 8px
+            rgba(0,0,0,.35)
+        );
+
+    transition:
+        opacity .12s ease,
+        transform .12s ease;
+}
+
+#waxSeal.hide {
+
+    opacity: 0;
+
+    transform:
+        translate(-50%, -50%)
+        scale(.85);
+}
+
+
+/* =========================================================
+   ENVELOPE TEXT
+========================================================= */
+
+.envelope-hint {
+    position: absolute;
+
+    z-index: 60;
+
+    left: 50%;
+
+    bottom: 4px;
+
+    transform:
+        translateX(-50%);
+
+    color: #dfbd73;
+
+    font-size: 9px;
+
+    letter-spacing: 3px;
+
+    white-space: nowrap;
+
+    transition:
+        opacity .15s ease;
+}
+
+.envelope-area.opening .envelope-hint {
+    opacity: 0;
+}
+
+
+/* =========================================================
+   LETTER
+   NO SCROLL
+   TALLER + WIDER
+========================================================= */
+
+.letter {
+    position: absolute;
+
+    z-index: 100;
+
+    left: 50%;
+    top: 50%;
+
+    /*
+       کاغذ عریض‌تر شده
+    */
+    width:
+        min(560px, 88vw);
+
+    /*
+       کاغذ بلندتر شده
+    */
+    height:
+        min(650px, 78vh);
+
+    /*
+       فاصله داخلی کمتر تا متن فضای بیشتری داشته باشد
+    */
+    padding:
+        42px 48px 45px;
+
+    transform:
+        translate(-50%, -50%)
+        scale(.94);
+
+    opacity: 0;
+
+    background:
+        linear-gradient(
+            135deg,
+            #fff8dc,
+            #edddb3
+        );
+
+    border:
+        1px solid #bd944b;
+
+    box-shadow:
+        0 25px 60px
+        rgba(0,0,0,.55);
+
+    color: #48181a;
+
+    transition:
+        opacity .35s ease,
+        transform .35s ease;
+
+    pointer-events: none;
+
+    text-align: left;
+
+    /*
+       مهم:
+       هیچ اسکرولی روی کاغذ وجود ندارد
+    */
+    overflow: hidden;
+}
+
+.envelope-area.show-letter .letter {
+
+    opacity: 1;
+
+    transform:
+        translate(-50%, -50%)
+        scale(1);
+
+    pointer-events: auto;
+}
+
+.letter::before {
+    content: "";
+
+    position: absolute;
+
+    inset: 14px;
+
+    border:
+        1px solid
+        rgba(110,70,20,.25);
+
+    pointer-events: none;
+}
+
+
+/* =========================================================
+   LETTER TITLE
+========================================================= */
+
+.letter-title {
+    position: relative;
+
+    text-align: center;
+
+    color: #6d2023;
+
+    font-size: 27px;
+
+    margin-bottom: 28px;
+}
+
+
+/* =========================================================
+   TYPING
+========================================================= */
+
+#typing {
+    position: relative;
+
+    font-size: 19px;
+
+    line-height: 1.95;
+
+    white-space: pre-wrap;
+
+    word-break: normal;
+
+    /*
+       متن اجازه دارد داخل کاغذ پایین برود
+       ولی خودش اسکرول ایجاد نمی‌کند
+    */
+    overflow: visible;
+}
+
+.cursor {
+    display: inline-block;
+
+    width: 2px;
+
+    height: 21px;
+
+    background: #6c2525;
+
+    vertical-align: -3px;
+
+    animation:
+        blink .7s infinite;
+}
+
+@keyframes blink {
+
+    0%,
+    50% {
+        opacity: 1;
+    }
+
+    51%,
+    100% {
+        opacity: 0;
+    }
+}
+
+.heart {
+    text-align: center;
+
+    margin-top: 30px;
+
+    color: #9a252d;
+
+    font-size: 24px;
+
+    opacity: 0;
+
+    transition:
+        opacity 1s ease;
+}
+
+.heart.show {
+    opacity: 1;
+}
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 600px) {
+
+    .lock-area {
+        width: 140px;
+        height: 140px;
+    }
+
+    .keypad {
+        width: 280px;
+    }
+
+    .page-title {
+        font-size: 29px;
+    }
+
+    .page-subtitle {
+        font-size: 14px;
+        margin-bottom: 25px;
+    }
+
+    .envelope-area {
+        width: 94vw;
+        height: 280px;
+    }
+
+    #waxSeal {
+        width: 52px;
+        height: 52px;
+    }
+
+    .envelope-hint {
+        bottom: 0;
+
+        font-size: 8px;
+
+        letter-spacing: 2px;
+    }
+
+
+    /*
+       موبایل:
+       کاغذ تقریباً تمام ارتفاع صفحه را می‌گیرد
+       و همچنان بدون اسکرول است.
+    */
+
+    .letter {
+
+        width: 92vw;
+
+        height: 78vh;
+
+        min-height: 500px;
+
+        padding:
+            38px 30px 40px;
+
+        overflow: hidden;
+    }
+
+    .letter-title {
+        font-size: 24px;
+
+        margin-bottom: 25px;
+    }
+
+    #typing {
+
+        font-size: 17px;
+
+        line-height: 1.85;
+    }
+
+    .heart {
+        margin-top: 25px;
+
+        font-size: 21px;
+    }
+}
+
+
+/* =========================================================
+   SMALL HEIGHT SCREENS
+========================================================= */
+
+@media (max-height: 700px) {
+
+    .letter {
+
+        height: 82vh;
+
+        min-height: 0;
+
+        padding:
+            30px 34px 35px;
+    }
+
+    .letter-title {
+
+        margin-bottom: 20px;
+
+        font-size: 23px;
+    }
+
+    #typing {
+
+        font-size: 16px;
+
+        line-height: 1.75;
+    }
+}
+
+</style>
 </head>
+
 
 <body>
 
-    <!-- ================= PASSWORD ================= -->
 
-    <div class="password-screen" id="passwordScreen">
+<!-- =========================================================
+     LOCK SCREEN
+========================================================= -->
 
-        <div class="password-box">
+<div class="lock-screen" id="lockScreen">
 
-            <div class="lock-icon">🔒</div>
+    <div class="lock-area" id="lockArea">
 
-            <h2>💖 Для моей любимой 💖</h2>
+        <img
+            class="lock-image"
+            src="src/lock.png"
+            alt="Lock"
+        >
 
-            <p>
-                Введи пароль, чтобы открыть особенное сообщение для Нии...
-            </p>
+    </div>
 
-            <input
-                type="password"
-                id="passwordInput"
-                placeholder="Введи пароль"
-                inputmode="numeric"
-            >
 
-            <button id="passwordBtn">
-                Открыть ❤️
-            </button>
+    <div class="message" id="messageGroup">
 
-            <span class="error" id="passwordError"></span>
+        <div class="title">
+            От кого-то
+        </div>
 
-            <div class="hint">
-                Только для одного особенного человека ✨
-            </div>
+        <div class="subtitle">
+            Для тебя
+        </div>
 
+        <div class="secret">
+            маленький секрет...
         </div>
 
     </div>
 
 
-    <!-- ================= MAIN CONTENT ================= -->
+    <div class="passcode" id="passcodeGroup">
 
-    <div
-        class="main-content"
-        id="mainContent"
-        style="display:none;"
-    >
+        <span class="pass-dot"></span>
+        <span class="pass-dot"></span>
+        <span class="pass-dot"></span>
+        <span class="pass-dot"></span>
 
-        <div class="bg-hearts" id="bgHearts"></div>
+    </div>
 
-        <audio id="bgMusic" loop>
-            <source src="Perfect.mp3" type="audio/mpeg">
-        </audio>
+
+    <div class="keypad" id="keypadGroup">
+
+        <button class="key" data-key="1">1</button>
+        <button class="key" data-key="2">2</button>
+        <button class="key" data-key="3">3</button>
+
+        <button class="key" data-key="4">4</button>
+        <button class="key" data-key="5">5</button>
+        <button class="key" data-key="6">6</button>
+
+        <button class="key" data-key="7">7</button>
+        <button class="key" data-key="8">8</button>
+        <button class="key" data-key="9">9</button>
+
+        <div></div>
+
+        <button class="key" data-key="0">0</button>
 
         <button
-            id="musicBtn"
-            class="music-btn"
-            title="Включить/выключить музыку"
+            class="key delete"
+            data-key="delete"
         >
-            🎵
+
+            <svg
+                class="backspace-icon"
+                viewBox="0 0 24 18"
+            >
+
+                <path
+                    d="M8 2.5H20C21.1 2.5 22 3.4 22 4.5V13.5C22 14.6 21.1 15.5 20 15.5H8L2.5 9L8 2.5Z"
+                    fill="none"
+                    stroke="#e5c99c"
+                    stroke-width="1.55"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                />
+
+                <path
+                    d="M12 6L17 12"
+                    fill="none"
+                    stroke="#e5c99c"
+                    stroke-width="1.4"
+                    stroke-linecap="round"
+                />
+
+                <path
+                    d="M17 6L12 12"
+                    fill="none"
+                    stroke="#e5c99c"
+                    stroke-width="1.4"
+                    stroke-linecap="round"
+                />
+
+            </svg>
+
         </button>
 
+    </div>
 
-        <div class="wrapper" id="wrapper">
 
-            <!-- ================= ASK CARD ================= -->
+    <div
+        class="error-text"
+        id="errorText"
+    >
+        Попробуй ещё раз...
+    </div>
 
-            <div class="card" id="askCard">
+</div>
 
-                <div class="cute-image">
-                    💝
-                </div>
 
-                <h1>
-                    Несколько слов от моего сердца
-                </h1>
 
-                <p class="subtitle">
-                    Эта страница создана для нескольких слов, которые не всегда получается сказать...
-                </p>
+<!-- =========================================================
+     DRAWER
+========================================================= -->
 
-                <div class="love-quotes">
-                    <p class="quote">
-                        «Ты всё ещё хочешь быть рядом со мной?» 💕
-                    </p>
-                </div>
+<div class="drawer" id="drawer">
 
-                <p class="hint">
-                    Иногда простых слов достаточно, чтобы передать самые красивые чувства~ 💝
-                </p>
+    <div class="content">
 
-                <div class="buttons" id="buttonContainer">
+        <h1 class="page-title">
+            A Letter, Just For You
+        </h1>
 
-                    <button id="yesBtn">
-                        Да! 💖
-                    </button>
-
-                    <button id="noBtn">
-                        Нет 😢
-                    </button>
-
-                </div>
-
-                <p class="footer-text">
-                    P.S. Кнопка «Нет» немного стесняется 😏
-                </p>
-
-            </div>
-
-
-            <!-- ================= PAGE 1 ================= -->
-
-            <div class="card result glow" id="resultCard">
-
-                <div class="cute-image">
-                    💖
-                </div>
-
-                <h1>
-                    Для тебя, Ния 💕
-                </h1>
-
-                <p class="subtitle">
-                    Некоторые слова нужно говорить только от чистого сердца...
-                </p>
-
-                <div class="message-box">
-
-                    <strong>
-                        💌 Для моей дорогой Нии
-                    </strong>
-
-                    <br><br>
-
-                    Некоторые люди сами того не замечая,
-                    занимают особенное место в сердце.
-                    Ты для меня именно такой человек. 💖
-
-                    <br><br>
-
-                    Когда я разговариваю с тобой,
-                    даже самый обычный день может превратиться в красивое воспоминание.
-                    Твой смех, твои слова и даже маленькие вещи,
-                    которым ты, возможно, сама не придаёшь значения,
-                    для меня важны. ✨
-
-                    <br><br>
-
-                    Ты делаешь некоторые моменты
-                    намного ценнее, чем они кажутся.
-                    Иногда присутствие особенного человека
-                    может изменить настроение всего дня. 🌷
-
-                    <br><br>
-
-                    Я хочу, чтобы ты знала:
-                    ты очень много для меня значишь,
-                    и я рад всем красивым воспоминаниям, которые связаны с тобой. 🤍
-
-                    <br><br>
-
-                    Твоя улыбка прекрасна,
-                    твой смех особенный,
-                    с тобой приятно разговаривать,
-                    но больше всего мне нравится
-                    просто настоящая ты. 💕
-
-                    <br><br>
-
-                    <span style="
-                        font-size:1.3rem;
-                        font-family:'Dancing Script',cursive;
-                    ">
-                        «Некоторых людей невозможно описать
-                        несколькими словами,
-                        потому что они сами становятся особенным чувством.»
-                    </span>
-
-                    <br><br>
-
-                    <span style="font-size:1.8rem;">
-                        💕 Я люблю тебя, Ния 💕
-                    </span>
-
-                </div>
-
-
-                <div class="reasons-box">
-
-                    <strong>
-                        💝 Что делает тебя особенной:
-                    </strong>
-
-                    <ul class="love-list">
-
-                        <li>
-                            Твоя улыбка 😊
-                        </li>
-
-                        <li>
-                            Твой смех 💫
-                        </li>
-
-                        <li>
-                            Твоя доброта 🤍
-                        </li>
-
-                        <li>
-                            То, как ты разговариваешь 🌷
-                        </li>
-
-                        <li>
-                            Просто ты сама ❤️
-                        </li>
-
-                    </ul>
-
-                </div>
-
-
-                <div class="date-display">
-                    💖 У некоторых чувств нет срока годности.
-                </div>
-
-
-                <button
-                    id="nextPageBtn"
-                    class="next-page-btn"
-                >
-                    Следующая страница 📖
-                </button>
-
-            </div>
-
-
-            <!-- ================= PAGE 2 ================= -->
-
-            <div
-                class="card result page-2"
-                id="page2Card"
-            >
-
-                <div class="cute-image">
-                    💌
-                </div>
-
-                <h1>
-                    Маленькое письмо для тебя 💕
-                </h1>
-
-                <div class="message-box personal-message">
-
-                    <strong>
-                        Для человека, который для меня особенный ✨
-                    </strong>
-
-                    <br><br>
-
-                    Возможно, я не всегда могу точно сказать,
-                    что чувствую,
-                    но есть люди, чьё присутствие само по себе дарит тепло.
-                    Ты одна из таких людей для меня. 💖
-
-                    <br><br>
-
-                    Я хочу, чтобы, когда тебе грустно,
-                    у тебя всегда находилась хотя бы маленькая причина улыбнуться.
-
-                    <br><br>
-
-                    Я хочу, чтобы, когда ты счастлива,
-                    ты могла разделить эту радость с людьми, которые тебя любят.
-
-                    <br><br>
-
-                    И я хочу, чтобы ты знала:
-                    твоя ценность не зависит от того, что ты делаешь.
-                    Ты ценна просто потому, что ты — это ты. 🤍
-
-                    <br><br>
-
-                    Каждый разговор,
-                    каждый смех,
-                    каждая маленькая шутка
-                    и даже простое молчание
-                    могут превратиться в воспоминания,
-                    которые надолго останутся в сердце. 🌙
-
-                    <br><br>
-
-                    Я действительно рад всем красивым моментам,
-                    которые мы создали вместе.
-
-                    <br><br>
-
-                    <span style="
-                        font-size:1.5rem;
-                        font-family:'Dancing Script',cursive;
-                    ">
-                        Ты — прекрасная часть моей истории 💝
-                    </span>
-
-                </div>
-
-
-                <div class="love-quotes">
-
-                    <p class="quote">
-                        «Иногда один человек просто своим присутствием
-                        делает мир немного красивее.» 🌹
-                    </p>
-
-                </div>
-
-
-                <div class="btn-group">
-
-                    <button
-                        id="prevPageBtn"
-                        class="prev-page-btn"
-                    >
-                        → Назад
-                    </button>
-
-                    <button
-                        id="nextPage2Btn"
-                        class="next-page-btn"
-                    >
-                        Следующая страница 📖
-                    </button>
-
-                </div>
-
-                <p class="footer-love">
-                    Всегда улыбайся 💕
-                </p>
-
-            </div>
-
-
-            <!-- ================= PAGE 3 ================= -->
-
-            <div
-                class="card result page-3"
-                id="page3Card"
-            >
-
-                <div class="cute-image">
-                    💝
-                </div>
-
-                <h1>
-                    Для Нии 💕
-                </h1>
-
-                <div class="message-box final-message">
-
-                    <strong>
-                        🌹 От моего сердца к твоему 🌹
-                    </strong>
-
-                    <br><br>
-
-                    Если бы мне пришлось выбрать
-                    несколько слов из всех слов на свете для тебя,
-                    я бы, наверное, сказал:
-
-                    <br><br>
-
-                    <strong>
-                        «Ты очень особенная для меня.»
-                    </strong>
-
-                    <br><br>
-
-                    Не потому, что всё всегда было идеально,
-                    а потому, что моменты, которые я провёл с тобой,
-                    имеют для меня особую ценность. 💖
-
-                    <br><br>
-
-                    Некоторые воспоминания начинаются очень просто:
-                    одно сообщение,
-                    одна улыбка,
-                    обычный разговор...
-
-                    <br><br>
-
-                    Но со временем понимаешь,
-                    что именно эти простые моменты
-                    становятся самыми дорогими частями жизни. ✨
-
-                    <br><br>
-
-                    Я надеюсь, что рядом с тобой
-                    всегда будут хорошие люди,
-                    у тебя всегда будет причина улыбаться,
-                    и ты никогда не забудешь,
-                    насколько ты ценна. 🌷
-
-                    <br><br>
-
-                    Спасибо тебе за то, что ты остаёшься собой;
-                    тебе не нужно быть похожей ни на кого другого.
-
-                    <br><br>
-
-                    <span style="
-                        font-size:1.6rem;
-                        font-family:'Dancing Script',cursive;
-                    ">
-
-                        Ния,
-                        некоторые чувства невозможно полностью описать словами...
-
-                        <br><br>
-
-                        Их можно только почувствовать. 💝
-
-                    </span>
-
-                    <br><br>
-
-                    <span style="font-size:1.7rem;">
-                        💕 Я люблю тебя 💕
-                    </span>
-
-                </div>
-
-
-                <button
-                    id="prevPage2Btn"
-                    class="prev-page-btn"
-                >
-                    → Предыдущая страница
-                </button>
-
-                <p class="footer-love">
-                    Одна улыбка для тебя сегодня 😊💖
-                </p>
-
-            </div>
-
+        <div class="page-subtitle">
+            Tap the envelope to unseal
         </div>
 
 
         <div
-            class="photos-container"
-            id="photosContainer"
-        ></div>
+            class="envelope-area"
+            id="envelopeArea"
+        >
+
+            <!-- CLOSED -->
+            <img
+                id="envelope1"
+                class="envelope-image active"
+                src="src/1.png"
+                alt=""
+            >
+
+
+            <!-- SEPARATE WAX SEAL -->
+            <img
+                id="waxSeal"
+                src="src/h.png"
+                alt=""
+            >
+
+
+            <!-- HALF OPEN -->
+            <img
+                id="envelope2"
+                class="envelope-image"
+                src="src/2.png"
+                alt=""
+            >
+
+
+            <!-- FULLY OPEN -->
+            <img
+                id="envelope3"
+                class="envelope-image"
+                src="src/3.png"
+                alt=""
+            >
+
+
+            <div
+                class="envelope-hint"
+                id="envelopeHint"
+            >
+                TAP TO UNSEAL ♡
+            </div>
+
+
+            <!-- LETTER -->
+            <div class="letter">
+
+                <h2 class="letter-title">
+                    Для тебя
+                </h2>
+
+                <div id="typing"></div>
+
+                <span
+                    class="cursor"
+                    id="cursor"
+                ></span>
+
+                <div
+                    class="heart"
+                    id="heart"
+                >
+                    ✦ ♥ ✦
+                </div>
+
+            </div>
+
+        </div>
 
     </div>
 
+</div>
 
-    <script>
 
-        /* ================= PASSWORD ================= */
 
-        const passwordScreen =
-            document.getElementById('passwordScreen');
+<script>
 
-        const mainContent =
-            document.getElementById('mainContent');
+/* =========================================================
+   SETTINGS
+========================================================= */
 
-        const passwordInput =
-            document.getElementById('passwordInput');
+const PASSCODE = "2009";
 
-        const passwordBtn =
-            document.getElementById('passwordBtn');
 
-        const passwordError =
-            document.getElementById('passwordError');
+/* =========================================================
+   LOCK ELEMENTS
+========================================================= */
 
+const lockScreen =
+    document.getElementById("lockScreen");
 
-        /* رمز */
+const lockArea =
+    document.getElementById("lockArea");
 
-        const SECRET_PASSWORD = "2009";
+const messageGroup =
+    document.getElementById("messageGroup");
 
+const passcodeGroup =
+    document.getElementById("passcodeGroup");
 
-        function unlockPage() {
+const keypadGroup =
+    document.getElementById("keypadGroup");
 
-            const entered =
-                passwordInput.value.trim();
+const passDots =
+    document.querySelectorAll(".pass-dot");
 
-            if (entered === SECRET_PASSWORD) {
+const errorText =
+    document.getElementById("errorText");
 
-                passwordScreen.style.display = 'none';
+const drawer =
+    document.getElementById("drawer");
 
-                mainContent.style.display = 'block';
 
-                initPage();
+/* =========================================================
+   ENVELOPE ELEMENTS
+========================================================= */
 
-            } else {
+const envelopeArea =
+    document.getElementById("envelopeArea");
 
-                passwordError.textContent =
-                    '❌ Неверный пароль. Попробуй ещё раз!';
+const envelope1 =
+    document.getElementById("envelope1");
 
-                passwordInput.value = '';
+const envelope2 =
+    document.getElementById("envelope2");
 
-                passwordInput.focus();
+const envelope3 =
+    document.getElementById("envelope3");
 
-            }
+const waxSeal =
+    document.getElementById("waxSeal");
 
-        }
+const envelopeHint =
+    document.getElementById("envelopeHint");
 
 
-        passwordBtn.addEventListener(
-            'click',
-            unlockPage
-        );
+/* =========================================================
+   LETTER ELEMENTS
+========================================================= */
 
+const typing =
+    document.getElementById("typing");
 
-        passwordInput.addEventListener(
-            'keydown',
-            (e) => {
+const cursor =
+    document.getElementById("cursor");
 
-                if (e.key === 'Enter') {
-                    unlockPage();
-                }
+const heart =
+    document.getElementById("heart");
 
-            }
-        );
 
+/* =========================================================
+   PASSWORD
+========================================================= */
 
-        /* ================= VARIABLES ================= */
+let entered = "";
 
-        let noClickCount = 0;
-        let isMusicPlaying = false;
-        let floatingInterval;
+let busy = false;
 
 
-        const noBtn =
-            document.getElementById('noBtn');
+function updateDots() {
 
-        const yesBtn =
-            document.getElementById('yesBtn');
+    passDots.forEach(
+        (dot, index) => {
 
-        const askCard =
-            document.getElementById('askCard');
-
-        const resultCard =
-            document.getElementById('resultCard');
-
-        const music =
-            document.getElementById('bgMusic');
-
-        const wrapper =
-            document.getElementById('wrapper');
-
-        const musicBtn =
-            document.getElementById('musicBtn');
-
-        const nextPageBtn =
-            document.getElementById('nextPageBtn');
-
-        const prevPageBtn =
-            document.getElementById('prevPageBtn');
-
-        const nextPage2Btn =
-            document.getElementById('nextPage2Btn');
-
-        const prevPage2Btn =
-            document.getElementById('prevPage2Btn');
-
-        const page2Card =
-            document.getElementById('page2Card');
-
-        const page3Card =
-            document.getElementById('page3Card');
-
-
-        /* ================= BACKGROUND HEARTS ================= */
-
-        function createBgHearts() {
-
-            const bgHearts =
-                document.getElementById('bgHearts');
-
-            const heartEmojis = [
-                '💕',
-                '💖',
-                '💗',
-                '💓',
-                '💝',
-                '❤️',
-                '🩷'
-            ];
-
-            for (let i = 0; i < 12; i++) {
-
-                const heart =
-                    document.createElement('div');
-
-                heart.className = 'bg-heart';
-
-                heart.innerHTML =
-                    heartEmojis[
-                        Math.floor(
-                            Math.random() *
-                            heartEmojis.length
-                        )
-                    ];
-
-                heart.style.left =
-                    Math.random() * 100 + '%';
-
-                heart.style.animationDelay =
-                    Math.random() * 15 + 's';
-
-                heart.style.animationDuration =
-                    15 + Math.random() * 10 + 's';
-
-                heart.style.fontSize =
-                    15 + Math.random() * 20 + 'px';
-
-                bgHearts.appendChild(heart);
-            }
-        }
-
-
-        /* ================= SPARKLES ================= */
-
-        function createSparkles() {
-
-            for (let i = 0; i < 18; i++) {
-
-                const sparkle =
-                    document.createElement('div');
-
-                sparkle.className = 'sparkle';
-
-                sparkle.style.left =
-                    Math.random() * 100 + '%';
-
-                sparkle.style.top =
-                    Math.random() * 100 + '%';
-
-                sparkle.style.animationDelay =
-                    Math.random() * 2 + 's';
-
-                document.body.appendChild(sparkle);
-            }
-        }
-
-
-        /* ================= NO BUTTON ================= */
-
-        const cuteMessages = [
-
-            {
-                text: 'Не говори «нет»... 🥺',
-                noText: 'Нет'
-            },
-
-            {
-                text: 'Дай мне маленький шанс 💕',
-                noText: 'Неттт'
-            },
-
-            {
-                text: 'Мне не нравится этот ответ 😭',
-                noText: 'Нет...'
-            },
-
-            {
-                text: 'Всего одно маленькое «да»? 🌷',
-                noText: 'Ни за что'
-            },
-
-            {
-                text: 'Улыбнись и подумай ещё раз 😌',
-                noText: 'Н-нет'
-            },
-
-            {
-                text: 'Последний шанс на красивое «да» 💖',
-                noText: '...'
-            },
-
-            {
-                text: 'Хорошо... но ты всё равно мне дорога 💕',
-                noText: ''
-            }
-
-        ];
-
-
-        function showCutePopup(message) {
-
-            const popup =
-                document.createElement('div');
-
-            popup.className = 'cute-popup';
-
-            popup.innerHTML = message;
-
-            document.body.appendChild(popup);
-
-            setTimeout(() => {
-                popup.remove();
-            }, 2000);
-        }
-
-
-        function handleNoClick() {
-
-            noClickCount++;
-
-            const messageIndex =
-                Math.min(
-                    noClickCount - 1,
-                    cuteMessages.length - 1
-                );
-
-            const currentMessage =
-                cuteMessages[messageIndex];
-
-
-            showCutePopup(
-                currentMessage.text
+            dot.classList.toggle(
+                "filled",
+                index < entered.length
             );
 
-
-            const yesScale =
-                1 + noClickCount * 0.25;
-
-
-            yesBtn.style.transform =
-                `scale(${Math.min(yesScale, 2.5)})`;
-
-
-            if (noClickCount >= 3) {
-
-                yesBtn.style.boxShadow =
-                    '0 15px 50px rgba(255, 77, 148, 0.6)';
-            }
-
-
-            if (noClickCount >= 5) {
-
-                yesBtn.style.boxShadow =
-                    '0 20px 60px rgba(255, 77, 148, 0.8)';
-            }
-
-
-            const noScale =
-                Math.max(
-                    1 - noClickCount * 0.15,
-                    0.3
-                );
-
-
-            noBtn.style.transform =
-                `scale(${noScale})`;
-
-            noBtn.style.opacity =
-                Math.max(
-                    1 - noClickCount * 0.12,
-                    0.3
-                );
-
-            noBtn.textContent =
-                currentMessage.noText || 'Нет';
-
-
-            if (noClickCount >= cuteMessages.length) {
-
-                noBtn.style.transition =
-                    'all 0.5s ease';
-
-                noBtn.style.transform =
-                    'scale(0)';
-
-                noBtn.style.opacity = '0';
-
-                setTimeout(() => {
-
-                    noBtn.style.display = 'none';
-
-                    showCutePopup(
-                        'Кнопка «Нет» сдалась! 💖'
-                    );
-
-                }, 500);
-            }
         }
+    );
+}
 
 
-        noBtn.addEventListener(
-            'click',
-            (e) => {
+function enterDigit(number) {
 
-                e.preventDefault();
-                e.stopPropagation();
+    if (busy) {
+        return;
+    }
 
-                handleNoClick();
+    if (entered.length >= 4) {
+        return;
+    }
 
-            }
+    entered += number;
+
+    updateDots();
+
+    if (entered.length === 4) {
+
+        setTimeout(
+            checkPassword,
+            100
+        );
+
+    }
+}
+
+
+function deleteDigit() {
+
+    if (busy) {
+        return;
+    }
+
+    entered =
+        entered.slice(0, -1);
+
+    passDots.forEach(
+        dot =>
+            dot.classList.remove("error")
+    );
+
+    errorText.classList.remove("show");
+
+    updateDots();
+}
+
+
+function checkPassword() {
+
+    if (busy) {
+        return;
+    }
+
+    busy = true;
+
+    if (entered === PASSCODE) {
+
+        unlock();
+
+    } else {
+
+        wrongPassword();
+
+    }
+}
+
+
+function wrongPassword() {
+
+    lockArea.classList.add("shake");
+
+    passDots.forEach(
+        dot =>
+            dot.classList.add("error")
+    );
+
+    errorText.classList.add("show");
+
+
+    setTimeout(() => {
+
+        lockArea.classList.remove("shake");
+
+    }, 450);
+
+
+    setTimeout(() => {
+
+        entered = "";
+
+        updateDots();
+
+        passDots.forEach(
+            dot =>
+                dot.classList.remove("error")
+        );
+
+        errorText.classList.remove("show");
+
+        busy = false;
+
+    }, 850);
+}
+
+
+/* =========================================================
+   UNLOCK
+========================================================= */
+
+function unlock() {
+
+    messageGroup.classList.add("fade-up");
+
+    passcodeGroup.classList.add("fade-up");
+
+    keypadGroup.classList.add("fade-up");
+
+
+    setTimeout(() => {
+
+        lockArea.classList.add(
+            "slide-down"
+        );
+
+    }, 150);
+
+
+    setTimeout(() => {
+
+        lockScreen.classList.add(
+            "hidden"
         );
 
 
-        noBtn.addEventListener(
-            'touchend',
-            (e) => {
+        setTimeout(() => {
 
-                e.preventDefault();
+            drawer.classList.add(
+                "open"
+            );
 
-                handleNoClick();
+        }, 180);
 
-            },
-            {
-                passive: false
-            }
-        );
+    }, 1000);
+}
 
 
-        /* ================= YES ================= */
+/* =========================================================
+   KEYPAD
+========================================================= */
 
-        yesBtn.addEventListener(
-            'click',
+document
+    .querySelectorAll(".key")
+    .forEach(button => {
+
+        button.addEventListener(
+            "click",
             () => {
 
-                askCard.classList.add('hide');
+                const key =
+                    button.dataset.key;
 
-                setTimeout(() => {
+                if (key === "delete") {
 
-                    askCard.style.display = 'none';
-
-                    resultCard.classList.add('show');
-
-                    music.volume = 0.5;
-
-                    music.play().catch(() => {
-                        console.log(
-                            'Audio autoplay blocked'
-                        );
-                    });
-
-                    launchHearts();
-
-                    launchConfetti();
-
-                    launchFloatingPhotos();
-
-                    if (floatingInterval) {
-                        clearInterval(
-                            floatingInterval
-                        );
-                    }
-
-                    floatingInterval =
-                        setInterval(
-                            launchHearts,
-                            6000
-                        );
-
-                }, 500);
-
-            }
-        );
-
-
-        /* ================= HEARTS ================= */
-
-        function launchHearts() {
-
-            const heartEmojis = [
-                '❤️',
-                '💖',
-                '💕',
-                '💗',
-                '💓',
-                '💝',
-                '🩷',
-                '💘',
-                '💞'
-            ];
-
-            for (let i = 0; i < 14; i++) {
-
-                setTimeout(() => {
-
-                    const heart =
-                        document.createElement('div');
-
-                    heart.className = 'heart';
-
-                    heart.innerHTML =
-                        heartEmojis[
-                            Math.floor(
-                                Math.random() *
-                                heartEmojis.length
-                            )
-                        ];
-
-                    heart.style.left =
-                        Math.random() *
-                        window.innerWidth +
-                        'px';
-
-                    heart.style.bottom =
-                        '-50px';
-
-                    heart.style.fontSize =
-                        20 +
-                        Math.random() * 30 +
-                        'px';
-
-                    heart.style.animationDuration =
-                        3 +
-                        Math.random() * 2 +
-                        's';
-
-                    document.body.appendChild(
-                        heart
-                    );
-
-                    setTimeout(() => {
-                        heart.remove();
-                    }, 5000);
-
-                }, i * 100);
-            }
-        }
-
-
-        /* ================= CONFETTI ================= */
-
-        function launchConfetti() {
-
-            const colors = [
-                '#ff6b9d',
-                '#ff4d94',
-                '#ffb6c1',
-                '#ff69b4',
-                '#ffd700',
-                '#ff1493',
-                '#ff85a2'
-            ];
-
-            for (let i = 0; i < 50; i++) {
-
-                setTimeout(() => {
-
-                    const confetti =
-                        document.createElement('div');
-
-                    confetti.className =
-                        'confetti';
-
-                    confetti.style.left =
-                        Math.random() *
-                        window.innerWidth +
-                        'px';
-
-                    confetti.style.top =
-                        '-20px';
-
-                    confetti.style.backgroundColor =
-                        colors[
-                            Math.floor(
-                                Math.random() *
-                                colors.length
-                            )
-                        ];
-
-                    confetti.style.borderRadius =
-                        Math.random() > 0.5
-                            ? '50%'
-                            : '0';
-
-                    confetti.style.width =
-                        5 +
-                        Math.random() * 10 +
-                        'px';
-
-                    confetti.style.height =
-                        5 +
-                        Math.random() * 10 +
-                        'px';
-
-                    confetti.style.animationDuration =
-                        2 +
-                        Math.random() * 2 +
-                        's';
-
-                    document.body.appendChild(
-                        confetti
-                    );
-
-                    setTimeout(() => {
-                        confetti.remove();
-                    }, 4000);
-
-                }, i * 30);
-            }
-        }
-
-
-        /* ================= CLICK HEARTS ================= */
-
-        document.addEventListener(
-            'click',
-            (e) => {
-
-                if (
-                    resultCard.classList.contains('show') ||
-                    page2Card.classList.contains('show') ||
-                    page3Card.classList.contains('show')
-                ) {
-
-                    for (let i = 0; i < 5; i++) {
-
-                        const heart =
-                            document.createElement('div');
-
-                        heart.className = 'heart';
-
-                        heart.innerHTML = '💖';
-
-                        heart.style.left =
-                            e.clientX +
-                            (Math.random() - 0.5) * 50 +
-                            'px';
-
-                        heart.style.top =
-                            e.clientY + 'px';
-
-                        heart.style.fontSize =
-                            '20px';
-
-                        document.body.appendChild(
-                            heart
-                        );
-
-                        setTimeout(() => {
-                            heart.remove();
-                        }, 4000);
-                    }
-                }
-            }
-        );
-
-
-        /* ================= MUSIC ================= */
-
-        musicBtn.addEventListener(
-            'click',
-            (e) => {
-
-                e.stopPropagation();
-
-                if (isMusicPlaying) {
-
-                    music.pause();
-
-                    musicBtn.textContent = '🎵';
-
-                    musicBtn.classList.remove(
-                        'playing'
-                    );
-
-                    isMusicPlaying = false;
+                    deleteDigit();
 
                 } else {
 
-                    music.volume = 0.5;
-
-                    music.play()
-                        .then(() => {
-
-                            musicBtn.textContent =
-                                '🔊';
-
-                            musicBtn.classList.add(
-                                'playing'
-                            );
-
-                            isMusicPlaying = true;
-
-                        })
-                        .catch(() => {
-
-                            console.log(
-                                'Click to enable music'
-                            );
-
-                        });
-                }
-            }
-        );
-
-
-        /* ================= PAGE 1 → PAGE 2 ================= */
-
-        nextPageBtn.addEventListener(
-            'click',
-            () => {
-
-                resultCard.classList.add(
-                    'flipping',
-                    'flip-out'
-                );
-
-                setTimeout(() => {
-
-                    resultCard.classList.remove(
-                        'show',
-                        'flipping',
-                        'flip-out'
-                    );
-
-                    resultCard.style.display =
-                        'none';
-
-                    page2Card.style.display =
-                        'block';
-
-                    page2Card.classList.add(
-                        'show',
-                        'flipping',
-                        'flip-in'
-                    );
-
-                    wrapper.classList.add(
-                        'letter-view'
-                    );
-
-                    launchHearts();
-
-                    setTimeout(() => {
-
-                        page2Card.classList.remove(
-                            'flipping',
-                            'flip-in'
-                        );
-
-                    }, 800);
-
-                }, 750);
-
-            }
-        );
-
-
-        /* ================= PAGE 2 → PAGE 1 ================= */
-
-        prevPageBtn.addEventListener(
-            'click',
-            () => {
-
-                page2Card.classList.add(
-                    'flipping',
-                    'flip-out-reverse'
-                );
-
-                setTimeout(() => {
-
-                    page2Card.classList.remove(
-                        'show',
-                        'flipping',
-                        'flip-out-reverse'
-                    );
-
-                    page2Card.style.display =
-                        'none';
-
-                    resultCard.style.display =
-                        'block';
-
-                    resultCard.classList.add(
-                        'show',
-                        'flipping',
-                        'flip-in-reverse'
-                    );
-
-                    wrapper.classList.remove(
-                        'letter-view'
-                    );
-
-                    setTimeout(() => {
-
-                        resultCard.classList.remove(
-                            'flipping',
-                            'flip-in-reverse'
-                        );
-
-                    }, 800);
-
-                }, 750);
-
-            }
-        );
-
-
-        /* ================= PAGE 2 → PAGE 3 ================= */
-
-        nextPage2Btn.addEventListener(
-            'click',
-            () => {
-
-                page2Card.classList.add(
-                    'flipping',
-                    'flip-out'
-                );
-
-                setTimeout(() => {
-
-                    page2Card.classList.remove(
-                        'show',
-                        'flipping',
-                        'flip-out'
-                    );
-
-                    page2Card.style.display =
-                        'none';
-
-                    page3Card.style.display =
-                        'block';
-
-                    page3Card.classList.add(
-                        'show',
-                        'flipping',
-                        'flip-in'
-                    );
-
-                    wrapper.classList.add(
-                        'letter-view'
-                    );
-
-                    launchHearts();
-
-                    setTimeout(() => {
-
-                        page3Card.classList.remove(
-                            'flipping',
-                            'flip-in'
-                        );
-
-                    }, 800);
-
-                }, 750);
-
-            }
-        );
-
-
-        /* ================= PAGE 3 → PAGE 2 ================= */
-
-        prevPage2Btn.addEventListener(
-            'click',
-            () => {
-
-                page3Card.classList.add(
-                    'flipping',
-                    'flip-out-reverse'
-                );
-
-                setTimeout(() => {
-
-                    page3Card.classList.remove(
-                        'show',
-                        'flipping',
-                        'flip-out-reverse'
-                    );
-
-                    page3Card.style.display =
-                        'none';
-
-                    page2Card.style.display =
-                        'block';
-
-                    page2Card.classList.add(
-                        'show',
-                        'flipping',
-                        'flip-in-reverse'
-                    );
-
-                    wrapper.classList.add(
-                        'letter-view'
-                    );
-
-                    setTimeout(() => {
-
-                        page2Card.classList.remove(
-                            'flipping',
-                            'flip-in-reverse'
-                        );
-
-                    }, 800);
-
-                }, 750);
-
-            }
-        );
-
-
-        /* ================= FLOATING PHOTOS ================= */
-
-        function launchFloatingPhotos() {
-
-            const photos = [
-
-                'data:image/svg+xml;charset=UTF-8,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22240%22 height=%22240%22 viewBox=%220 0 240 240%22%3E%3Crect width=%22240%22 height=%22240%22 rx=%2230%22 fill=%22%23ffd9e8%22/%3E%3Ccircle cx=%2270%22 cy=%2280%22 r=%2250%22 fill=%22%23fff4a8%22/%3E%3Ccircle cx=%22160%22 cy=%22100%22 r=%2240%22 fill=%22%23ffb3d1%22/%3E%3Ccircle cx=%2290%22 cy=%2280%22 r=%226%22 fill=%22%23333%22/%3E%3Ccircle cx=%22130%22 cy=%2290%22 r=%226%22 fill=%22%23333%22/%3E%3Cpath d=%22M80 110c10 12 30 12 40 0%22 stroke=%22%23e85d8d%22 stroke-width=%228%22 stroke-linecap=%22round%22 fill=%22none%22/%3E%3Cpath d=%22M78 170c18-32 66-32 84 0%22 fill=%22%23ffffff%22 fill-opacity=%220.7%22/%3E%3Ctext x=%22120%22 y=%22205%22 text-anchor=%22middle%22 font-family=%22Arial%22 font-size=%2220%22 fill=%22%23d63384%22%3ECute%3C/text%3E%3C/svg%3E',
-
-                'data:image/svg+xml;charset=UTF-8,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22240%22 height=%22240%22 viewBox=%220 0 240 240%22%3E%3Crect width=%22240%22 height=%22240%22 rx=%2230%22 fill=%22%23ffe7f1%22/%3E%3Ccircle cx=%22120%22 cy=%22100%22 r=%2262%22 fill=%22%23ff8fb8%22/%3E%3Ccircle cx=%22100%22 cy=%2290%22 r=%226%22 fill=%22%23333%22/%3E%3Ccircle cx=%22140%22 cy=%2290%22 r=%226%22 fill=%22%23333%22/%3E%3Cpath d=%22M95 122c15 18 35 18 50 0%22 stroke=%22%23ffffff%22 stroke-width=%228%22 stroke-linecap=%22round%22 fill=%22none%22/%3E%3Cpath d=%22M60 170c18-26 102-26 120 0%22 fill=%22%23fff%22 fill-opacity=%220.55%22/%3E%3Cpath d=%22M45 55l8-16 8 16 16 8-16 8-8 16-8-16-16-8z%22 fill=%22%23ffd166%22/%3E%3Ctext x=%22120%22 y=%22205%22 text-anchor=%22middle%22 font-family=%22Arial%22 font-size=%2220%22 fill=%22%23d63384%22%3ELove%3C/text%3E%3C/svg%3E',
-
-                'data:image/svg+xml;charset=UTF-8,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22240%22 height=%22240%22 viewBox=%220 0 240 240%22%3E%3Crect width=%22240%22 height=%22240%22 rx=%2230%22 fill=%22%23fff0f5%22/%3E%3Ccircle cx=%22100%22 cy=%2280%22 r=%2248%22 fill=%22%23a8e6cf%22/%3E%3Ccircle cx=%22140%22 cy=%22100%22 r=%2258%22 fill=%22%23b8c0ff%22/%3E%3Ccircle cx=%2290%22 cy=%2278%22 r=%226%22 fill=%22%23333%22/%3E%3Ccircle cx=%22128%22 cy=%2290%22 r=%226%22 fill=%22%23333%22/%3E%3Cpath d=%22M85 116c12 10 28 10 40 0%22 stroke=%22%23e85d8d%22 stroke-width=%228%22 stroke-linecap=%22round%22 fill=%22none%22/%3E%3Cpath d=%22M58 168c15-28 104-28 120 0%22 fill=%22%23fff%22 fill-opacity=%220.65%22/%3E%3Ctext x=%22120%22 y=%22205%22 text-anchor=%22middle%22 font-family=%22Arial%22 font-size=%2220%22 fill=%22%23d63384%22%3ECute%3C/text%3E%3C/svg%3E'
-
-            ];
-
-
-            let launchIndex = 0;
-
-
-            function launchOnePhoto(sideOverride) {
-
-                const photo =
-                    photos[
-                        launchIndex % photos.length
-                    ];
-
-                launchIndex++;
-
-
-                const sizes = [
-                    'small',
-                    'small',
-                    'medium'
-                ];
-
-
-                const size =
-                    sizes[
-                        Math.floor(
-                            Math.random() *
-                            sizes.length
-                        )
-                    ];
-
-
-                const img =
-                    document.createElement('img');
-
-
-                img.src = photo;
-
-                img.className =
-                    `floating-photo ${size}`;
-
-                img.alt =
-                    'Милая картинка';
-
-
-                const side =
-                    sideOverride ||
-                    (
-                        Math.random() > 0.5
-                            ? 'left'
-                            : 'right'
-                    );
-
-
-                if (side === 'left') {
-
-                    img.style.left =
-                        Math.random() * 10 +
-                        1 +
-                        '%';
-
-                } else {
-
-                    img.style.right =
-                        Math.random() * 10 +
-                        1 +
-                        '%';
-
-                    img.style.left = 'auto';
+                    enterDigit(key);
 
                 }
 
+            }
+        );
 
-                img.style.animationDuration =
-                    12 +
-                    Math.random() * 6 +
-                    's';
-
-
-                document.body.appendChild(img);
+    });
 
 
-                setTimeout(() => {
-                    img.remove();
-                }, 18000);
+/* =========================================================
+   PHYSICAL KEYBOARD
+========================================================= */
 
+document.addEventListener(
+    "keydown",
+    event => {
 
-                img.onerror = function () {
-                    this.style.display = 'none';
-                };
+        if (
+            !lockScreen.classList.contains(
+                "hidden"
+            )
+        ) {
+
+            if (
+                event.key >= "0" &&
+                event.key <= "9"
+            ) {
+
+                enterDigit(event.key);
 
             }
 
+            if (
+                event.key === "Backspace"
+            ) {
 
-            launchOnePhoto('left');
+                deleteDigit();
 
-            launchOnePhoto('right');
-
-            setTimeout(
-                () => launchOnePhoto('left'),
-                700
-            );
-
-            setTimeout(
-                () => launchOnePhoto('right'),
-                1000
-            );
-
-
-            if (window.floatingInterval) {
-                clearInterval(
-                    window.floatingInterval
-                );
             }
 
-
-            window.floatingInterval =
-                setInterval(
-                    () => {
-
-                        launchOnePhoto(
-                            launchIndex % 2 === 0
-                                ? 'left'
-                                : 'right'
-                        );
-
-                    },
-                    9000
-                );
         }
 
+    }
+);
 
-        /* ================= INIT ================= */
 
-        function initPage() {
+/* =========================================================
+   ENVELOPE OPEN
+========================================================= */
 
-            createBgHearts();
+let envelopeOpened = false;
 
-            createSparkles();
 
-            setTimeout(() => {
+envelopeArea.addEventListener(
+    "click",
+    () => {
 
-                musicBtn.style.animation =
-                    'musicPulse 0.5s ease-in-out 3';
-
-            }, 2000);
-
+        if (envelopeOpened) {
+            return;
         }
 
-    </script>
+        envelopeOpened = true;
+
+
+        envelopeArea.classList.add(
+            "opening"
+        );
+
+
+        waxSeal.classList.add(
+            "hide"
+        );
+
+
+        /* 1 -> 2 */
+
+        setTimeout(() => {
+
+            envelope1.classList.remove(
+                "active"
+            );
+
+            envelope2.classList.add(
+                "active"
+            );
+
+        }, 120);
+
+
+        /* 2 -> 3 */
+
+        setTimeout(() => {
+
+            envelope2.classList.remove(
+                "active"
+            );
+
+            envelope3.classList.add(
+                "active"
+            );
+
+        }, 330);
+
+
+        /* SHOW LETTER */
+
+        setTimeout(() => {
+
+            envelopeArea.classList.add(
+                "show-letter"
+            );
+
+            envelopeHint.style.display =
+                "none";
+
+            startTyping();
+
+        }, 500);
+
+    }
+);
+
+
+/* =========================================================
+   RUSSIAN LETTER
+========================================================= */
+
+const message =
+`Дорогая моя девочка,
+
+хочу, чтобы ты всегда знала,
+как много ты для меня значишь.
+
+Пусть в твоей жизни будет
+много счастья, тепла и красивых
+моментов.
+
+Береги себя и всегда улыбайся.
+
+Ты очень дорога мне. ♥`;
+
+
+/* =========================================================
+   TYPING
+========================================================= */
+
+let position = 0;
+
+
+function startTyping() {
+
+    position = 0;
+
+    typing.textContent = "";
+
+    cursor.style.display =
+        "inline-block";
+
+    heart.classList.remove(
+        "show"
+    );
+
+    typeCharacter();
+}
+
+
+function typeCharacter() {
+
+    if (
+        position >=
+        message.length
+    ) {
+
+        cursor.style.display =
+            "none";
+
+
+        setTimeout(() => {
+
+            heart.classList.add(
+                "show"
+            );
+
+        }, 400);
+
+        return;
+    }
+
+
+    typing.textContent +=
+        message[position];
+
+    position++;
+
+
+    let speed = 38;
+
+
+    if (
+        message[position - 1] === "," ||
+        message[position - 1] === "."
+    ) {
+
+        speed = 160;
+
+    }
+
+
+    if (
+        message[position - 1] === "\n"
+    ) {
+
+        speed = 250;
+
+    }
+
+
+    setTimeout(
+        typeCharacter,
+        speed
+    );
+}
+
+
+/* =========================================================
+   INITIAL
+========================================================= */
+
+updateDots();
+
+</script>
 
 </body>
 </html>
