@@ -1,0 +1,1690 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Для тебя</title>
+
+<style>
+
+/* =========================================================
+   RESET
+========================================================= */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html,
+body {
+    width: 100%;
+    min-height: 100%;
+    overflow: hidden;
+}
+
+body {
+    font-family: Georgia, "Times New Roman", serif;
+    background: #faf6f0;
+}
+
+
+/* =========================================================
+   LOCK SCREEN
+========================================================= */
+
+.lock-screen {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    background:
+        radial-gradient(
+            circle at 50% 38%,
+            rgba(255, 80, 50, .16),
+            transparent 32%
+        ),
+        linear-gradient(
+            180deg,
+            #980005 0%,
+            #850004 48%,
+            #680003 100%
+        );
+
+    color: #f5dfb0;
+
+    transition:
+        opacity .75s ease,
+        visibility .75s ease;
+}
+
+.lock-screen.hidden {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+}
+
+
+/* =========================================================
+   LOCK AREA
+========================================================= */
+
+.lock-area {
+    width: clamp(140px, 18vw, 210px);
+    height: clamp(140px, 18vw, 210px);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    margin-bottom: 8px;
+
+    transition:
+        transform .7s cubic-bezier(.1,.88,.18,1),
+        opacity .5s ease;
+}
+
+.lock-area.slide-down {
+    transform: translateY(180px);
+    opacity: 0;
+}
+
+
+/* =========================================================
+   LOCK IMAGE
+========================================================= */
+
+.lock-image {
+    width: 100%;
+    height: 100%;
+
+    object-fit: contain;
+
+    display: block;
+
+    user-select: none;
+    pointer-events: none;
+
+    filter:
+        drop-shadow(0 8px 20px rgba(0,0,0,.3));
+
+    animation:
+        floating 4s ease-in-out infinite;
+}
+
+@keyframes floating {
+
+    0%,
+    100% {
+        transform:
+            translateY(0)
+            rotate(0deg);
+    }
+
+    50% {
+        transform:
+            translateY(-6px)
+            rotate(-1deg);
+    }
+}
+
+
+/* =========================================================
+   WRONG PASSWORD SHAKE
+========================================================= */
+
+.lock-area.shake {
+    animation: shake .45s ease;
+}
+
+@keyframes shake {
+
+    0%,
+    100% {
+        transform: translateX(0);
+    }
+
+    20% {
+        transform: translateX(-9px);
+    }
+
+    40% {
+        transform: translateX(9px);
+    }
+
+    60% {
+        transform: translateX(-7px);
+    }
+
+    80% {
+        transform: translateX(7px);
+    }
+}
+
+
+/* =========================================================
+   MESSAGE
+========================================================= */
+
+.message {
+    text-align: center;
+
+    margin-bottom: 6px;
+
+    transition:
+        opacity .35s ease,
+        transform .35s ease;
+}
+
+.message.fade-up {
+    opacity: 0;
+    transform: translateY(22px);
+}
+
+.title {
+    font-family:
+        "Brush Script MT",
+        "Segoe Script",
+        cursive;
+
+    font-size:
+        clamp(25px, 3vw, 38px);
+
+    font-weight: 500;
+
+    color: #f7e5bd;
+}
+
+.subtitle {
+    margin-top: 2px;
+
+    font-family:
+        "Brush Script MT",
+        "Segoe Script",
+        cursive;
+
+    font-size:
+        clamp(19px, 2vw, 28px);
+
+    color: #f0d6a4;
+
+    font-style: italic;
+}
+
+.secret {
+    margin-top: 3px;
+
+    color: #d9b88a;
+
+    font-size:
+        clamp(11px, .9vw, 15px);
+
+    font-style: italic;
+}
+
+
+/* =========================================================
+   PASSWORD DOTS
+========================================================= */
+
+.passcode {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 9px;
+
+    margin:
+        11px 0 13px;
+
+    transition:
+        opacity .35s ease,
+        transform .35s ease;
+}
+
+.passcode.fade-up {
+    opacity: 0;
+    transform: translateY(18px);
+}
+
+.pass-dot {
+    width: 10px;
+    height: 10px;
+
+    border-radius: 50%;
+
+    border:
+        1.5px solid
+        rgba(245,220,180,.5);
+
+    background:
+        rgba(255,255,255,.08);
+
+    transition: .2s ease;
+}
+
+.pass-dot.filled {
+    background: #f0d095;
+
+    border-color: #f0d095;
+
+    transform: scale(1.15);
+
+    box-shadow:
+        0 2px 8px
+        rgba(255,210,130,.25);
+}
+
+.pass-dot.error {
+    background: #ff6262;
+
+    border-color: #ff6262;
+}
+
+
+/* =========================================================
+   KEYPAD
+========================================================= */
+
+.keypad {
+    display: grid;
+
+    grid-template-columns:
+        repeat(3, 1fr);
+
+    gap: 8px;
+
+    width:
+        min(85vw, 320px);
+
+    margin-top: 4px;
+
+    transition:
+        opacity .38s ease,
+        transform .38s ease;
+}
+
+.keypad.fade-up {
+    opacity: 0;
+
+    transform:
+        translateY(28px);
+
+    pointer-events: none;
+}
+
+.key {
+    height:
+        clamp(40px, 5.5vh, 52px);
+
+    border-radius: 8px;
+
+    border:
+        1px solid
+        rgba(255,220,180,.22);
+
+    background:
+        linear-gradient(
+            180deg,
+            rgba(255,255,255,.14),
+            rgba(255,220,200,.08)
+        );
+
+    color: #f5dfb0;
+
+    font-size:
+        clamp(14px, 1.2vw, 20px);
+
+    font-family: inherit;
+
+    cursor: pointer;
+
+    box-shadow:
+        0 3px 8px
+        rgba(0,0,0,.12),
+
+        inset 0 1px 0
+        rgba(255,255,255,.12);
+
+    outline: none;
+
+    transition:
+        transform .08s ease,
+        background .15s ease;
+}
+
+.key:hover {
+    background:
+        rgba(255,255,255,.16);
+}
+
+.key:active {
+    transform:
+        scale(.92)
+        translateY(1px);
+}
+
+.key.delete {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.backspace-icon {
+    width: 20px;
+    height: 16px;
+}
+
+.error-text {
+    min-height: 1.4em;
+
+    margin-top: 10px;
+
+    color: #ffb0a8;
+
+    font-size:
+        clamp(11px, .8vw, 14px);
+
+    font-style: italic;
+
+    opacity: 0;
+
+    transition:
+        opacity .2s ease;
+}
+
+.error-text.show {
+    opacity: 1;
+}
+
+
+/* =========================================================
+   DRAWER
+========================================================= */
+
+.drawer {
+    position: fixed;
+
+    left: 0;
+    right: 0;
+    bottom: 0;
+
+    width: 100%;
+    height: 100%;
+
+    z-index: 100;
+
+    overflow: hidden;
+
+    background:
+        radial-gradient(
+            ellipse at 80% 15%,
+            rgba(220,90,45,.25),
+            transparent 30%
+        ),
+
+        radial-gradient(
+            ellipse at 20% 50%,
+            rgba(120,10,20,.35),
+            transparent 45%
+        ),
+
+        linear-gradient(
+            135deg,
+            #681016,
+            #45080d 55%,
+            #290306
+        );
+
+    transform:
+        translateY(100%);
+
+    transition:
+        transform
+        1.25s
+        cubic-bezier(.22,.85,.25,1);
+
+    display: flex;
+
+    justify-content: center;
+    align-items: center;
+}
+
+.drawer.open {
+    transform:
+        translateY(0);
+}
+
+.drawer::before {
+    content: "";
+
+    position: absolute;
+
+    inset: 0;
+
+    opacity: .10;
+
+    background:
+        radial-gradient(
+            circle,
+            rgba(255,255,255,.35) 1px,
+            transparent 2px
+        );
+
+    background-size:
+        150px 150px;
+
+    pointer-events: none;
+}
+
+
+/* =========================================================
+   CONTENT
+========================================================= */
+
+.content {
+    position: relative;
+
+    z-index: 2;
+
+    width:
+        min(700px, 90vw);
+
+    text-align: center;
+}
+
+.page-title {
+    color: #f5e2b5;
+
+    font-size:
+        clamp(29px, 4vw, 45px);
+
+    margin-bottom: 12px;
+
+    text-shadow:
+        0 3px 15px
+        rgba(0,0,0,.6);
+}
+
+.page-subtitle {
+    color: #e3c58d;
+
+    font-size: 16px;
+
+    font-style: italic;
+
+    margin-bottom: 38px;
+}
+
+
+/* =========================================================
+   ENVELOPE CONTAINER
+========================================================= */
+
+.envelope-area {
+    position: relative;
+
+    width: min(520px, 90vw);
+
+    height: 330px;
+
+    margin: auto;
+
+    cursor: pointer;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    user-select: none;
+}
+
+
+/* =========================================================
+   ENVELOPE IMAGES
+========================================================= */
+
+.envelope-image {
+    position: absolute;
+
+    left: 50%;
+    top: 50%;
+
+    width: 100%;
+    height: 100%;
+
+    transform:
+        translate(-50%, -50%);
+
+    object-fit: contain;
+
+    display: block;
+
+    user-select: none;
+
+    pointer-events: none;
+
+    filter:
+        drop-shadow(
+            0 20px 35px
+            rgba(0,0,0,.42)
+        );
+
+    opacity: 0;
+
+    transition:
+        opacity .12s linear;
+}
+
+.envelope-image.active {
+    opacity: 1;
+}
+
+
+/* =========================================================
+   H.png
+========================================================= */
+
+#waxSeal {
+
+    position: absolute;
+
+    z-index: 50;
+
+    left: 50%;
+    top: 50%;
+
+    width: 52px;
+    height: 52px;
+
+    transform:
+        translate(-50%, -50%);
+
+    object-fit: contain;
+
+    display: block;
+
+    opacity: 1;
+
+    visibility: visible;
+
+    pointer-events: none;
+
+    user-select: none;
+
+    filter:
+        drop-shadow(
+            0 4px 8px
+            rgba(0,0,0,.35)
+        );
+
+    transition:
+        opacity .12s ease,
+        transform .12s ease;
+}
+
+#waxSeal.hide {
+
+    opacity: 0;
+
+    transform:
+        translate(-50%, -50%)
+        scale(.85);
+}
+
+
+/* =========================================================
+   ENVELOPE TEXT
+========================================================= */
+
+.envelope-hint {
+    position: absolute;
+
+    z-index: 60;
+
+    left: 50%;
+
+    bottom: 4px;
+
+    transform:
+        translateX(-50%);
+
+    color: #dfbd73;
+
+    font-size: 9px;
+
+    letter-spacing: 3px;
+
+    white-space: nowrap;
+
+    transition:
+        opacity .15s ease;
+}
+
+.envelope-area.opening .envelope-hint {
+    opacity: 0;
+}
+
+
+/* =========================================================
+   LETTER
+   NO SCROLL
+   TALLER + WIDER
+========================================================= */
+
+.letter {
+    position: absolute;
+
+    z-index: 100;
+
+    left: 50%;
+    top: 50%;
+
+    /*
+       کاغذ عریض‌تر شده
+    */
+    width:
+        min(560px, 88vw);
+
+    /*
+       کاغذ بلندتر شده
+    */
+    height:
+        min(650px, 78vh);
+
+    /*
+       فاصله داخلی کمتر تا متن فضای بیشتری داشته باشد
+    */
+    padding:
+        42px 48px 45px;
+
+    transform:
+        translate(-50%, -50%)
+        scale(.94);
+
+    opacity: 0;
+
+    background:
+        linear-gradient(
+            135deg,
+            #fff8dc,
+            #edddb3
+        );
+
+    border:
+        1px solid #bd944b;
+
+    box-shadow:
+        0 25px 60px
+        rgba(0,0,0,.55);
+
+    color: #48181a;
+
+    transition:
+        opacity .35s ease,
+        transform .35s ease;
+
+    pointer-events: none;
+
+    text-align: left;
+
+    /*
+       مهم:
+       هیچ اسکرولی روی کاغذ وجود ندارد
+    */
+    overflow: hidden;
+}
+
+.envelope-area.show-letter .letter {
+
+    opacity: 1;
+
+    transform:
+        translate(-50%, -50%)
+        scale(1);
+
+    pointer-events: auto;
+}
+
+.letter::before {
+    content: "";
+
+    position: absolute;
+
+    inset: 14px;
+
+    border:
+        1px solid
+        rgba(110,70,20,.25);
+
+    pointer-events: none;
+}
+
+
+/* =========================================================
+   LETTER TITLE
+========================================================= */
+
+.letter-title {
+    position: relative;
+
+    text-align: center;
+
+    color: #6d2023;
+
+    font-size: 27px;
+
+    margin-bottom: 28px;
+}
+
+
+/* =========================================================
+   TYPING
+========================================================= */
+
+#typing {
+    position: relative;
+
+    font-size: 19px;
+
+    line-height: 1.95;
+
+    white-space: pre-wrap;
+
+    word-break: normal;
+
+    /*
+       متن اجازه دارد داخل کاغذ پایین برود
+       ولی خودش اسکرول ایجاد نمی‌کند
+    */
+    overflow: visible;
+}
+
+.cursor {
+    display: inline-block;
+
+    width: 2px;
+
+    height: 21px;
+
+    background: #6c2525;
+
+    vertical-align: -3px;
+
+    animation:
+        blink .7s infinite;
+}
+
+@keyframes blink {
+
+    0%,
+    50% {
+        opacity: 1;
+    }
+
+    51%,
+    100% {
+        opacity: 0;
+    }
+}
+
+.heart {
+    text-align: center;
+
+    margin-top: 30px;
+
+    color: #9a252d;
+
+    font-size: 24px;
+
+    opacity: 0;
+
+    transition:
+        opacity 1s ease;
+}
+
+.heart.show {
+    opacity: 1;
+}
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 600px) {
+
+    .lock-area {
+        width: 140px;
+        height: 140px;
+    }
+
+    .keypad {
+        width: 280px;
+    }
+
+    .page-title {
+        font-size: 29px;
+    }
+
+    .page-subtitle {
+        font-size: 14px;
+        margin-bottom: 25px;
+    }
+
+    .envelope-area {
+        width: 94vw;
+        height: 280px;
+    }
+
+    #waxSeal {
+        width: 52px;
+        height: 52px;
+    }
+
+    .envelope-hint {
+        bottom: 0;
+
+        font-size: 8px;
+
+        letter-spacing: 2px;
+    }
+
+
+    /*
+       موبایل:
+       کاغذ تقریباً تمام ارتفاع صفحه را می‌گیرد
+       و همچنان بدون اسکرول است.
+    */
+
+    .letter {
+
+        width: 92vw;
+
+        height: 78vh;
+
+        min-height: 500px;
+
+        padding:
+            38px 30px 40px;
+
+        overflow: hidden;
+    }
+
+    .letter-title {
+        font-size: 24px;
+
+        margin-bottom: 25px;
+    }
+
+    #typing {
+
+        font-size: 17px;
+
+        line-height: 1.85;
+    }
+
+    .heart {
+        margin-top: 25px;
+
+        font-size: 21px;
+    }
+}
+
+
+/* =========================================================
+   SMALL HEIGHT SCREENS
+========================================================= */
+
+@media (max-height: 700px) {
+
+    .letter {
+
+        height: 82vh;
+
+        min-height: 0;
+
+        padding:
+            30px 34px 35px;
+    }
+
+    .letter-title {
+
+        margin-bottom: 20px;
+
+        font-size: 23px;
+    }
+
+    #typing {
+
+        font-size: 16px;
+
+        line-height: 1.75;
+    }
+}
+
+</style>
+</head>
+
+
+<body>
+
+
+<!-- =========================================================
+     LOCK SCREEN
+========================================================= -->
+
+<div class="lock-screen" id="lockScreen">
+
+    <div class="lock-area" id="lockArea">
+
+        <img
+            class="lock-image"
+            src="lock.png"
+            alt="Lock"
+        >
+
+    </div>
+
+
+    <div class="message" id="messageGroup">
+
+        <div class="title">
+            От кого-то
+        </div>
+
+        <div class="subtitle">
+            Для тебя
+        </div>
+
+        <div class="secret">
+            маленький секрет...
+        </div>
+
+    </div>
+
+
+    <div class="passcode" id="passcodeGroup">
+
+        <span class="pass-dot"></span>
+        <span class="pass-dot"></span>
+        <span class="pass-dot"></span>
+        <span class="pass-dot"></span>
+
+    </div>
+
+
+    <div class="keypad" id="keypadGroup">
+
+        <button class="key" data-key="1">1</button>
+        <button class="key" data-key="2">2</button>
+        <button class="key" data-key="3">3</button>
+
+        <button class="key" data-key="4">4</button>
+        <button class="key" data-key="5">5</button>
+        <button class="key" data-key="6">6</button>
+
+        <button class="key" data-key="7">7</button>
+        <button class="key" data-key="8">8</button>
+        <button class="key" data-key="9">9</button>
+
+        <div></div>
+
+        <button class="key" data-key="0">0</button>
+
+        <button
+            class="key delete"
+            data-key="delete"
+        >
+
+            <svg
+                class="backspace-icon"
+                viewBox="0 0 24 18"
+            >
+
+                <path
+                    d="M8 2.5H20C21.1 2.5 22 3.4 22 4.5V13.5C22 14.6 21.1 15.5 20 15.5H8L2.5 9L8 2.5Z"
+                    fill="none"
+                    stroke="#e5c99c"
+                    stroke-width="1.55"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                />
+
+                <path
+                    d="M12 6L17 12"
+                    fill="none"
+                    stroke="#e5c99c"
+                    stroke-width="1.4"
+                    stroke-linecap="round"
+                />
+
+                <path
+                    d="M17 6L12 12"
+                    fill="none"
+                    stroke="#e5c99c"
+                    stroke-width="1.4"
+                    stroke-linecap="round"
+                />
+
+            </svg>
+
+        </button>
+
+    </div>
+
+
+    <div
+        class="error-text"
+        id="errorText"
+    >
+        Попробуй ещё раз...
+    </div>
+
+</div>
+
+
+
+<!-- =========================================================
+     DRAWER
+========================================================= -->
+
+<div class="drawer" id="drawer">
+
+    <div class="content">
+
+        <h1 class="page-title">
+            A Letter, Just For You
+        </h1>
+
+        <div class="page-subtitle">
+            Tap the envelope to unseal
+        </div>
+
+
+        <div
+            class="envelope-area"
+            id="envelopeArea"
+        >
+
+            <!-- CLOSED -->
+            <img
+                id="envelope1"
+                class="envelope-image active"
+                src="1.png"
+                alt=""
+            >
+
+
+            <!-- SEPARATE WAX SEAL -->
+            <img
+                id="waxSeal"
+                src="h.png"
+                alt=""
+            >
+
+
+            <!-- HALF OPEN -->
+            <img
+                id="envelope2"
+                class="envelope-image"
+                src="2.png"
+                alt=""
+            >
+
+
+            <!-- FULLY OPEN -->
+            <img
+                id="envelope3"
+                class="envelope-image"
+                src="3.png"
+                alt=""
+            >
+
+
+            <div
+                class="envelope-hint"
+                id="envelopeHint"
+            >
+                TAP TO UNSEAL ♡
+            </div>
+
+
+            <!-- LETTER -->
+            <div class="letter">
+
+                <h2 class="letter-title">
+                    Для тебя
+                </h2>
+
+                <div id="typing"></div>
+
+                <span
+                    class="cursor"
+                    id="cursor"
+                ></span>
+
+                <div
+                    class="heart"
+                    id="heart"
+                >
+                    ✦ ♥ ✦
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+
+<script>
+
+/* =========================================================
+   SETTINGS
+========================================================= */
+
+const PASSCODE = "2009";
+
+
+/* =========================================================
+   LOCK ELEMENTS
+========================================================= */
+
+const lockScreen =
+    document.getElementById("lockScreen");
+
+const lockArea =
+    document.getElementById("lockArea");
+
+const messageGroup =
+    document.getElementById("messageGroup");
+
+const passcodeGroup =
+    document.getElementById("passcodeGroup");
+
+const keypadGroup =
+    document.getElementById("keypadGroup");
+
+const passDots =
+    document.querySelectorAll(".pass-dot");
+
+const errorText =
+    document.getElementById("errorText");
+
+const drawer =
+    document.getElementById("drawer");
+
+
+/* =========================================================
+   ENVELOPE ELEMENTS
+========================================================= */
+
+const envelopeArea =
+    document.getElementById("envelopeArea");
+
+const envelope1 =
+    document.getElementById("envelope1");
+
+const envelope2 =
+    document.getElementById("envelope2");
+
+const envelope3 =
+    document.getElementById("envelope3");
+
+const waxSeal =
+    document.getElementById("waxSeal");
+
+const envelopeHint =
+    document.getElementById("envelopeHint");
+
+
+/* =========================================================
+   LETTER ELEMENTS
+========================================================= */
+
+const typing =
+    document.getElementById("typing");
+
+const cursor =
+    document.getElementById("cursor");
+
+const heart =
+    document.getElementById("heart");
+
+
+/* =========================================================
+   PASSWORD
+========================================================= */
+
+let entered = "";
+
+let busy = false;
+
+
+function updateDots() {
+
+    passDots.forEach(
+        (dot, index) => {
+
+            dot.classList.toggle(
+                "filled",
+                index < entered.length
+            );
+
+        }
+    );
+}
+
+
+function enterDigit(number) {
+
+    if (busy) {
+        return;
+    }
+
+    if (entered.length >= 4) {
+        return;
+    }
+
+    entered += number;
+
+    updateDots();
+
+    if (entered.length === 4) {
+
+        setTimeout(
+            checkPassword,
+            100
+        );
+
+    }
+}
+
+
+function deleteDigit() {
+
+    if (busy) {
+        return;
+    }
+
+    entered =
+        entered.slice(0, -1);
+
+    passDots.forEach(
+        dot =>
+            dot.classList.remove("error")
+    );
+
+    errorText.classList.remove("show");
+
+    updateDots();
+}
+
+
+function checkPassword() {
+
+    if (busy) {
+        return;
+    }
+
+    busy = true;
+
+    if (entered === PASSCODE) {
+
+        unlock();
+
+    } else {
+
+        wrongPassword();
+
+    }
+}
+
+
+function wrongPassword() {
+
+    lockArea.classList.add("shake");
+
+    passDots.forEach(
+        dot =>
+            dot.classList.add("error")
+    );
+
+    errorText.classList.add("show");
+
+
+    setTimeout(() => {
+
+        lockArea.classList.remove("shake");
+
+    }, 450);
+
+
+    setTimeout(() => {
+
+        entered = "";
+
+        updateDots();
+
+        passDots.forEach(
+            dot =>
+                dot.classList.remove("error")
+        );
+
+        errorText.classList.remove("show");
+
+        busy = false;
+
+    }, 850);
+}
+
+
+/* =========================================================
+   UNLOCK
+========================================================= */
+
+function unlock() {
+
+    messageGroup.classList.add("fade-up");
+
+    passcodeGroup.classList.add("fade-up");
+
+    keypadGroup.classList.add("fade-up");
+
+
+    setTimeout(() => {
+
+        lockArea.classList.add(
+            "slide-down"
+        );
+
+    }, 150);
+
+
+    setTimeout(() => {
+
+        lockScreen.classList.add(
+            "hidden"
+        );
+
+
+        setTimeout(() => {
+
+            drawer.classList.add(
+                "open"
+            );
+
+        }, 180);
+
+    }, 1000);
+}
+
+
+/* =========================================================
+   KEYPAD
+========================================================= */
+
+document
+    .querySelectorAll(".key")
+    .forEach(button => {
+
+        button.addEventListener(
+            "click",
+            () => {
+
+                const key =
+                    button.dataset.key;
+
+                if (key === "delete") {
+
+                    deleteDigit();
+
+                } else {
+
+                    enterDigit(key);
+
+                }
+
+            }
+        );
+
+    });
+
+
+/* =========================================================
+   PHYSICAL KEYBOARD
+========================================================= */
+
+document.addEventListener(
+    "keydown",
+    event => {
+
+        if (
+            !lockScreen.classList.contains(
+                "hidden"
+            )
+        ) {
+
+            if (
+                event.key >= "0" &&
+                event.key <= "9"
+            ) {
+
+                enterDigit(event.key);
+
+            }
+
+            if (
+                event.key === "Backspace"
+            ) {
+
+                deleteDigit();
+
+            }
+
+        }
+
+    }
+);
+
+
+/* =========================================================
+   ENVELOPE OPEN
+========================================================= */
+
+let envelopeOpened = false;
+
+
+envelopeArea.addEventListener(
+    "click",
+    () => {
+
+        if (envelopeOpened) {
+            return;
+        }
+
+        envelopeOpened = true;
+
+
+        envelopeArea.classList.add(
+            "opening"
+        );
+
+
+        waxSeal.classList.add(
+            "hide"
+        );
+
+
+        /* 1 -> 2 */
+
+        setTimeout(() => {
+
+            envelope1.classList.remove(
+                "active"
+            );
+
+            envelope2.classList.add(
+                "active"
+            );
+
+        }, 120);
+
+
+        /* 2 -> 3 */
+
+        setTimeout(() => {
+
+            envelope2.classList.remove(
+                "active"
+            );
+
+            envelope3.classList.add(
+                "active"
+            );
+
+        }, 330);
+
+
+        /* SHOW LETTER */
+
+        setTimeout(() => {
+
+            envelopeArea.classList.add(
+                "show-letter"
+            );
+
+            envelopeHint.style.display =
+                "none";
+
+            startTyping();
+
+        }, 500);
+
+    }
+);
+
+
+/* =========================================================
+   RUSSIAN LETTER
+========================================================= */
+
+const message =
+`Дорогая моя девочка,
+
+хочу, чтобы ты всегда знала,
+как много ты для меня значишь.
+
+Пусть в твоей жизни будет
+много счастья, тепла и красивых
+моментов.
+
+Береги себя и всегда улыбайся.
+
+Ты очень дорога мне. ♥`;
+
+
+/* =========================================================
+   TYPING
+========================================================= */
+
+let position = 0;
+
+
+function startTyping() {
+
+    position = 0;
+
+    typing.textContent = "";
+
+    cursor.style.display =
+        "inline-block";
+
+    heart.classList.remove(
+        "show"
+    );
+
+    typeCharacter();
+}
+
+
+function typeCharacter() {
+
+    if (
+        position >=
+        message.length
+    ) {
+
+        cursor.style.display =
+            "none";
+
+
+        setTimeout(() => {
+
+            heart.classList.add(
+                "show"
+            );
+
+        }, 400);
+
+        return;
+    }
+
+
+    typing.textContent +=
+        message[position];
+
+    position++;
+
+
+    let speed = 38;
+
+
+    if (
+        message[position - 1] === "," ||
+        message[position - 1] === "."
+    ) {
+
+        speed = 160;
+
+    }
+
+
+    if (
+        message[position - 1] === "\n"
+    ) {
+
+        speed = 250;
+
+    }
+
+
+    setTimeout(
+        typeCharacter,
+        speed
+    );
+}
+
+
+/* =========================================================
+   INITIAL
+========================================================= */
+
+updateDots();
+
+</script>
+
+</body>
+</html>
